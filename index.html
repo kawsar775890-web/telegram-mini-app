@@ -1,196 +1,116 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Task Hub</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body { background-color: #0b0f19; color: #ffffff; font-family: sans-serif; }
-    .neon-card { background: linear-gradient(135deg, #1e1b4b 0%, #311042 100%); border: 1px solid #4c1d95; }
-    .neon-btn { background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%); }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Hub BD</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #0f172a; color: #f8fafc; display: flex; flex-direction: column; height: 100vh; justify-content: space-between; }
+        .header { background: #1e293b; padding: 15px; text-align: center; border-bottom: 1px solid #334155; }
+        .header h1 { font-size: 18px; color: #38bdf8; }
+        .container { padding: 20px; flex-grow: 1; overflow-y: auto; text-align: center; }
+        .card { background: #1e293b; padding: 20px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #334155; }
+        .balance { font-size: 32px; font-weight: bold; color: #4ade80; margin: 10px 0; }
+        .btn { background: #2563eb; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; margin-top: 10px; font-size: 15px; }
+        .btn-success { background: #16a34a; }
+        .btn:active { opacity: 0.8; }
+        .nav-bar { background: #1e293b; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #334155; }
+        .nav-item { color: #94a3b8; text-decoration: none; font-size: 14px; cursor: pointer; }
+        .nav-item.active { color: #38bdf8; font-weight: bold; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: white; }
+    </style>
 </head>
-<body class="p-4 pb-20">
+<body>
 
-  <!-- Activation Gate Screen -->
-  <div id="activation-screen" class="hidden text-center p-6 bg-slate-900 rounded-2xl border border-purple-800 my-10">
-    <h2 class="text-xl font-bold text-red-400 mb-2">অ্যাকাউন্ট অ্যাক্টিভ নয়!</h2>
-    <p class="text-sm text-gray-300 mb-4">অ্যাকাউন্ট অ্যাক্টিভ করতে ৩০ টাকা নিচের নাম্বারে পাঠিয়ে স্ক্রিনশট দিন।</p>
-    <div class="bg-slate-800 p-3 rounded-lg font-bold text-cyan-400 mb-4">
-      bKash / Nagad: 01602725947
+    <div class="header">
+        <h1>Task Hub BD</h1>
     </div>
-    <input type="text" id="screenshot-link" placeholder="স্ক্রিনশট ড্রাইভ/ইমেজ লিংক" class="w-full p-3 rounded bg-slate-800 border border-slate-700 text-sm mb-3">
-    <button onclick="submitActivation()" class="w-full neon-btn py-3 rounded-lg font-bold">অ্যাক্টিভেশন রিকোয়েস্ট পাঠান</button>
-  </div>
 
-  <!-- Main App Container -->
-  <div id="main-app" class="hidden space-y-4">
-    
-    <!-- Header -->
-    <div class="flex items-center justify-between bg-slate-900 p-3 rounded-xl border border-slate-800">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center font-bold" id="user-avatar">U</div>
-        <div>
-          <p class="text-xs text-gray-400">Welcome back 👋</p>
-          <h3 class="font-bold text-sm" id="user-name">User Name</h3>
+    <div class="container">
+        <!-- Home Tab -->
+        <div id="home" class="tab-content active">
+            <div class="card">
+                <h3>Welcome, <span id="user-name">User</span>!</h3>
+                <p style="color: #94a3b8; font-size: 13px; margin-top: 5px;">ID: <span id="user-id">000000</span></p>
+                <div class="balance">৳<span id="user-balance">0.00</span></div>
+                <p>Current Balance</p>
+            </div>
+            <div class="card">
+                <h4>Account Activation</h4>
+                <p style="font-size: 13px; color: #94a3b8; margin: 8px 0;">Send ৳30 to BKash/Nagad: <b>01602725947</b></p>
+                <button class="btn btn-success" onclick="alert('Activation Request Sent!')">Activate Account</button>
+            </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Balance Banner -->
-    <div class="neon-card p-5 rounded-2xl text-center shadow-lg relative overflow-hidden">
-      <p class="text-xs text-purple-300 font-semibold uppercase tracking-wider">TOTAL BALANCE</p>
-      <h1 class="text-4xl font-extrabold my-1 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-300">৳ <span id="balance">0.00</span></h1>
-      <p class="text-xs text-gray-400">Total Earned: ৳ <span id="total-earned">0.00</span></p>
-    </div>
-
-    <!-- TAB CONTENTS -->
-    <!-- 1. Home Tab -->
-    <div id="tab-home" class="tab-content space-y-3">
-      <!-- Gradient Task Box (Client Requested) -->
-      <div class="neon-card p-4 rounded-xl flex justify-between items-center">
-        <div>
-          <h4 class="font-bold text-sm text-purple-200">Daily Tasks</h4>
-          <p class="text-xs text-gray-400">Complete tasks & earn daily</p>
+        <!-- Earn Tab -->
+        <div id="earn" class="tab-content">
+            <div class="card">
+                <h3>Watch & Earn</h3>
+                <p style="font-size: 13px; color: #94a3b8; margin: 10px 0;">Watch YouTube video to get ৳20 bonus!</p>
+                <button class="btn" onclick="window.open('https://youtube.com/shorts/K_X-zzBPjIM', '_blank')">Watch Video (৳20)</button>
+            </div>
         </div>
-        <button onclick="switchTab('earn')" class="neon-btn px-4 py-2 rounded-lg text-xs font-bold">View Tasks</button>
-      </div>
 
-      <div class="grid grid-cols-2 gap-3">
-        <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 text-center">
-          <p class="text-xs text-gray-400">Total Referrals</p>
-          <h2 class="text-xl font-bold text-cyan-400" id="total-referrals">0</h2>
+        <!-- Referral Tab -->
+        <div id="ref" class="tab-content">
+            <div class="card">
+                <h3>Refer & Earn</h3>
+                <p style="font-size: 13px; color: #94a3b8; margin: 10px 0;">Share your link with friends!</p>
+                <input type="text" id="ref-link" readonly value="Loading...">
+                <button class="btn" onclick="copyRefLink()">Copy Link</button>
+            </div>
         </div>
-        <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 text-center">
-          <p class="text-xs text-gray-400">Refer Bonus</p>
-          <h2 class="text-xl font-bold text-purple-400">৳ 20 / Refer</h2>
+
+        <!-- Profile Tab -->
+        <div id="profile" class="tab-content">
+            <div class="card">
+                <h3>Support & Help</h3>
+                <p style="font-size: 13px; color: #94a3b8; margin: 10px 0;">Contact our support admin</p>
+                <button class="btn" onclick="window.open('https://t.me/emone0011', '_blank')">Contact Admin</button>
+            </div>
         </div>
-      </div>
     </div>
 
-    <!-- 2. Earn Tab -->
-    <div id="tab-earn" class="tab-content hidden space-y-3">
-      <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
-        <h4 class="font-bold text-sm mb-1">Your Referral Link</h4>
-        <input type="text" id="ref-link" readonly class="w-full bg-slate-800 p-2 text-xs rounded text-cyan-400 border border-slate-700 mb-2">
-        <button onclick="copyRefLink()" class="w-full bg-slate-800 hover:bg-slate-700 text-xs py-2 rounded">Copy Link</button>
-      </div>
-
-      <!-- Watch Video Button (Conditional) -->
-      <div id="watch-video-section" class="bg-slate-900 p-4 rounded-xl border border-slate-800 text-center">
-        <h4 class="font-bold text-sm mb-2">Watch Video Task</h4>
-        <p class="text-xs text-gray-400 mb-3" id="task-desc">একটি ভিডিও দেখার জন্য একটি রেফার সম্পন্ন করতে হবে।</p>
-        <button id="btn-watch-video" disabled onclick="openVideoTask()" class="w-full py-3 rounded-lg font-bold bg-gray-700 text-gray-400 cursor-not-allowed">Watch Video (Locked)</button>
-      </div>
+    <!-- Navigation -->
+    <div class="nav-bar">
+        <div class="nav-item active" onclick="switchTab('home', this)">Home</div>
+        <div class="nav-item" onclick="switchTab('earn', this)">Earn</div>
+        <div class="nav-item" onclick="switchTab('ref', this)">Refer</div>
+        <div class="nav-item" onclick="switchTab('profile', this)">Profile</div>
     </div>
 
-    <!-- 3. Withdraw Tab -->
-    <div id="tab-withdraw" class="tab-content hidden space-y-3">
-      <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-3">
-        <h4 class="font-bold text-sm">Select Payment Method</h4>
-        <div class="flex gap-3">
-          <button class="flex-1 py-2 bg-pink-600 rounded font-bold text-xs">bKash</button>
-          <button class="flex-1 py-2 bg-orange-600 rounded font-bold text-xs">Nagad</button>
-        </div>
-        <input type="text" id="withdraw-num" placeholder="bKash / Nagad Number" class="w-full p-3 rounded bg-slate-800 border border-slate-700 text-sm">
-        <input type="number" id="withdraw-amt" placeholder="Amount (BDT)" class="w-full p-3 rounded bg-slate-800 border border-slate-700 text-sm">
-        <button onclick="submitWithdraw()" class="w-full neon-btn py-3 rounded-lg font-bold text-sm">Withdraw Request</button>
-      </div>
-    </div>
+    <script>
+        const tg = window.Telegram ? window.Telegram.WebApp : null;
+        if (tg) {
+            tg.expand();
+        }
 
-    <!-- 4. Profile Tab -->
-    <div id="tab-profile" class="tab-content hidden space-y-3">
-      <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-2 text-sm">
-        <p><span class="text-gray-400">User ID:</span> <span id="prof-id">-</span></p>
-        <p><span class="text-gray-400">Username:</span> <span id="prof-uname">-</span></p>
-      </div>
-      <a href="https://t.me/emone0011" target="_blank" class="block w-full text-center bg-blue-600 py-3 rounded-lg font-bold text-sm">Help & Support (@emone0011)</a>
-    </div>
+        let userData = {
+            id: tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : 12345678,
+            first_name: tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.first_name : 'User'
+        };
 
-  </div>
+        document.getElementById('user-name').innerText = userData.first_name;
+        document.getElementById('user-id').innerText = userData.id;
+        document.getElementById('ref-link').value = `https://t.me/HubBD_Bot?start=${userData.id}`;
 
-  <!-- Bottom Navigation -->
-  <div class="fixed bottom-0 left-0 right-0 bg-slate-950 border-t border-slate-800 flex justify-around py-3 text-xs">
-    <button onclick="switchTab('home')" class="text-purple-400 font-bold">Home</button>
-    <button onclick="switchTab('earn')" class="text-gray-400">Earn</button>
-    <button onclick="switchTab('withdraw')" class="text-gray-400">Withdraw</button>
-    <button onclick="switchTab('profile')" class="text-gray-400">Profile</button>
-  </div>
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            if(element) element.classList.add('active');
+        }
 
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-    const user = tg.initDataUnsafe?.user || { id: "123456", first_name: "Test User", username: "testuser" };
-
-    let userData = {};
-
-    async function init() {
-      document.getElementById('user-name').innerText = user.first_name;
-      document.getElementById('user-avatar').innerText = user.first_name[0];
-      
-      // Fetch User Data from Server
-      const res = await fetch('/api/user/init', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          telegramId: String(user.id),
-          name: user.first_name,
-          username: user.username
-        })
-      });
-      userData = await res.json();
-      updateUI();
-    }
-
-    function updateUI() {
-      if(!userData.isActive) {
-        document.getElementById('activation-screen').classList.remove('hidden');
-        document.getElementById('main-app').classList.add('hidden');
-        return;
-      }
-
-      document.getElementById('activation-screen').classList.add('hidden');
-      document.getElementById('main-app').classList.remove('hidden');
-
-      document.getElementById('balance').innerText = userData.balance;
-      document.getElementById('total-earned').innerText = userData.totalEarned;
-      document.getElementById('total-referrals').innerText = userData.referrals;
-      document.getElementById('ref-link').value = `https://t.me/HubBD_Bot?start=${userData.telegramId}`;
-      document.getElementById('prof-id').innerText = userData.telegramId;
-      document.getElementById('prof-uname').innerText = `@${userData.username || 'N/A'}`;
-
-      // Watch Video Button State
-      const btn = document.getElementById('btn-watch-video');
-      if(userData.canWatchVideo) {
-        btn.disabled = false;
-        btn.className = "w-full py-3 rounded-lg font-bold neon-btn text-white";
-        btn.innerText = "Watch Video & Earn ৳20";
-      }
-    }
-
-    function switchTab(tab) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      document.getElementById(`tab-${tab}`).classList.remove('hidden');
-    }
-
-    async function openVideoTask() {
-      window.open('https://youtube.com/shorts/K_X-zzBPjIM?si=IcXWtq22ksxzxGNR', '_blank');
-      // Auto Complete Task
-      const res = await fetch('/api/user/task-complete', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ telegramId: String(user.id) })
-      });
-      const data = await res.json();
-      if(data.success) {
-        alert('কাজের জন্য ধন্যবাদ! ২০ টাকা জমা হয়েছে।');
-        location.reload();
-      }
-    }
-
-    init();
-  </script>
+        function copyRefLink() {
+            const input = document.getElementById('ref-link');
+            input.select();
+            document.execCommand('copy');
+            alert('Referral link copied!');
+        }
+    </script>
 </body>
-          </html>
+</html>
