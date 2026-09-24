@@ -9,17 +9,18 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         
-        /* Dark Theme */
         body { background-color: #0f172a; color: #f8fafc; display: flex; flex-direction: column; height: 100vh; justify-content: space-between; }
         
-        /* App Bar */
-        .app-bar { background: #1e293b; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; font-weight: bold; font-size: 16px; color: #38bdf8; }
+        .app-bar { background: #1e293b; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; font-weight: bold; font-size: 15px; color: #38bdf8; }
         
+        .lang-select { background: #0f172a; color: #38bdf8; border: 1px solid #334155; padding: 4px 8px; border-radius: 6px; font-size: 12px; outline: none; cursor: pointer; }
+
+        .global-warning-banner { background: #ef4444; color: white; text-align: center; font-size: 11px; padding: 5px 10px; font-weight: bold; letter-spacing: 0.3px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+
         .container { flex-grow: 1; overflow-y: auto; padding-bottom: 80px; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* Home Header Gradient Card */
         .hero-card { background: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #f97316 100%); color: white; padding: 20px; border-radius: 20px; margin: 12px 16px; position: relative; }
         .user-greeting { font-size: 12px; opacity: 0.9; }
         .user-name-title { font-size: 22px; font-weight: 800; margin-bottom: 12px; letter-spacing: 0.5px; }
@@ -28,7 +29,6 @@
         .total-earned-text { font-size: 12px; opacity: 0.95; }
         .user-avatar-top { position: absolute; top: 16px; right: 16px; width: 42px; height: 42px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.8); }
 
-        /* Quick Action Grid */
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 16px; margin-bottom: 12px; }
         .action-card { background: #1e293b; padding: 14px 16px; border-radius: 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; border: 1px solid #334155; }
         .icon-box { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; color: white; }
@@ -37,21 +37,7 @@
         .action-title { font-size: 14px; font-weight: bold; color: #f8fafc; }
         .action-sub { font-size: 11px; color: #94a3b8; }
 
-        /* Account Activation Box */
-        .activation-banner { 
-            background: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #f97316 100%); 
-            color: white; 
-            padding: 16px; 
-            border-radius: 18px; 
-            margin: 0 16px 12px 16px; 
-            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.2); 
-        }
-        .banner-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .banner-title { font-size: 15px; font-weight: bold; display: flex; align-items: center; gap: 8px; }
-        .banner-sub { font-size: 12px; opacity: 0.95; margin-bottom: 10px; line-height: 1.4; }
-        .number-tag { background: rgba(0, 0, 0, 0.25); padding: 6px 10px; border-radius: 8px; font-weight: bold; font-size: 13px; display: inline-block; margin-bottom: 10px; }
-
-        /* Daily Tasks Card Styles */
+        /* Daily Task Box Styling (Positioned First) */
         .daily-task-card {
             background: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #f97316 100%);
             color: white;
@@ -59,6 +45,7 @@
             border-radius: 18px;
             margin: 0 16px 12px 16px;
             box-shadow: 0 4px 15px rgba(236, 72, 153, 0.2);
+            cursor: pointer;
         }
         .task-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .task-info { display: flex; align-items: center; gap: 10px; }
@@ -67,68 +54,97 @@
         .task-sub { font-size: 11px; opacity: 0.85; }
         .view-btn { background: rgba(255, 255, 255, 0.25); color: white; border: none; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; }
         .progress-container { width: 100%; height: 8px; background: rgba(255, 255, 255, 0.3); border-radius: 10px; overflow: hidden; margin-bottom: 6px; }
-        .progress-bar { height: 100%; background: white; border-radius: 10px; }
+        .progress-bar { height: 100%; background: white; border-radius: 10px; transition: width 0.3s ease; }
         .task-footer { display: flex; justify-content: space-between; font-size: 11px; opacity: 0.85; }
 
-        /* Stats Cards */
+        /* Activation Banner Styling */
+        .activation-banner { 
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); 
+            color: white; 
+            padding: 16px; 
+            border-radius: 18px; 
+            margin: 0 16px 12px 16px; 
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3); 
+            border: 1px solid #f87171;
+        }
+        .banner-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .banner-title { font-size: 15px; font-weight: bold; display: flex; align-items: center; gap: 8px; }
+        .banner-sub { font-size: 12px; opacity: 0.95; margin-bottom: 10px; line-height: 1.4; }
+        .number-tag { background: rgba(0, 0, 0, 0.3); padding: 6px 10px; border-radius: 8px; font-weight: bold; font-size: 13px; display: inline-block; margin-bottom: 10px; border: 1px dashed rgba(255,255,255,0.4); }
+
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 16px 12px 16px; }
         .stat-card { background: #1e293b; padding: 14px; border-radius: 16px; border: 1px solid #334155; }
         .stat-icon { font-size: 16px; color: #38bdf8; margin-bottom: 6px; background: #0f172a; width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
         .stat-value { font-size: 18px; font-weight: bold; color: #f8fafc; }
         .stat-label { font-size: 11px; color: #94a3b8; margin-top: 2px; }
 
-        /* Section Boxes */
         .section-box { background: #1e293b; margin: 0 16px 12px 16px; padding: 16px; border-radius: 16px; border: 1px solid #334155; }
         .section-title { font-size: 15px; font-weight: bold; margin-bottom: 10px; color: #f8fafc; display: flex; align-items: center; gap: 8px; }
 
-        /* Inputs & Buttons */
         input, select { width: 100%; padding: 10px 12px; margin: 6px 0 10px 0; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; font-size: 13px; outline: none; }
-        input:focus, select:focus { border-color: #38bdf8; }
+        input:focus { border-color: #38bdf8; }
         
         .btn { width: 100%; background: linear-gradient(135deg, #2563eb, #7c3aed); color: white; border: none; padding: 10px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; text-align: center; }
         .btn-white { background: white; color: #0f172a; }
-        .btn:disabled { background: #475569; cursor: not-allowed; }
 
-        /* Payment Selectors */
         .payment-methods { display: flex; gap: 10px; margin-bottom: 10px; }
         .pm-card { flex: 1; border: 1px solid #334155; background: #0f172a; border-radius: 10px; padding: 8px; text-align: center; cursor: pointer; font-weight: bold; font-size: 13px; color: #cbd5e1; }
         .pm-card.selected.bkash { border-color: #e2136e; background: #831843; color: white; }
         .pm-card.selected.nagad { border-color: #f97316; background: #7c2d12; color: white; }
 
-        /* Navigation Bar */
         .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; display: flex; justify-content: space-around; padding: 8px 0; border-top: 1px solid #334155; z-index: 100; }
         .nav-item { color: #94a3b8; text-align: center; font-size: 10px; cursor: pointer; flex: 1; }
         .nav-item i { font-size: 16px; display: block; margin-bottom: 2px; }
         .nav-item.active { color: #38bdf8; font-weight: bold; }
 
-        /* Modal Overlay */
+        /* Modal / Popup Styling */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
-        .modal-box { background: #1e293b; border-radius: 16px; padding: 20px; text-align: center; width: 100%; max-width: 330px; border: 1px solid #38bdf8; }
-        .modal-title { font-size: 16px; font-weight: bold; color: #f8fafc; margin-bottom: 6px; }
+        .modal-box { background: #1e293b; border-radius: 16px; padding: 20px; text-align: center; width: 100%; max-width: 330px; border: 1px solid #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
+        .modal-title { font-size: 17px; font-weight: bold; color: #ef4444; margin-bottom: 6px; }
 
-        /* History Table */
         .history-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #334155; font-size: 12px; color: #cbd5e1; }
-        .status-success { color: #4ade80; font-weight: bold; }
 
-        /* Profile Elements */
         .profile-header { text-align: center; padding: 16px; }
-        .profile-img { width: 70px; height: 70px; border-radius: 50%; border: 2px solid #38bdf8; margin-bottom: 8px; }
-        .profile-name { font-size: 16px; font-weight: bold; color: #f8fafc; }
+        .profile-img { width: 70px; height: 70px; border-radius: 50%; border: 2px solid #ef4444; margin-bottom: 8px; }
+        .profile-name { font-size: 16px; font-weight: bold; color: #f8fafc; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .status-badge-unverified { background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: normal; }
         .profile-sub { font-size: 12px; color: #94a3b8; }
+        
+        .withdraw-warning-box { background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; padding: 12px; border-radius: 12px; margin-bottom: 12px; font-size: 12px; color: #fca5a5; text-align: center; line-height: 1.4; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <!-- Top Bar -->
+    <!-- Top App Bar with Language Option -->
     <div class="app-bar">
         <span>Bangla Task Hub</span>
-        <i class="fa-solid fa-ellipsis-vertical"></i>
+        <select class="lang-select" onchange="changeLanguage(this.value)">
+            <option value="bn">বাংলা</option>
+            <option value="en">English</option>
+        </select>
+    </div>
+
+    <!-- Global Red Warning Strip (Appears on top until Active) -->
+    <div id="globalWarning" class="global-warning-banner">
+        <i class="fa-solid fa-triangle-exclamation"></i> আপনার একাউন্ট একটিভ নয়! দ্রুত একটিভ করুন।
+    </div>
+
+    <!-- App Entry Popup Modal -->
+    <div id="popupModal" class="modal-overlay">
+        <div class="modal-box">
+            <i class="fa-solid fa-circle-exclamation" style="font-size: 40px; color: #ef4444; margin-bottom: 10px;"></i>
+            <div class="modal-title">একাউন্ট একটিভ নয়!</div>
+            <div style="margin: 10px 0; font-size: 13px; color: #cbd5e1; line-height: 1.5;">
+                আপনার অ্যাকাউন্টটি সক্রিয় করা হয়নি। কাজের সার্ভিস চালু রাখতে ও টাকা উত্তোলন করতে দ্রুত ৩০ টাকা সেন্ড মানি করে অ্যাকাউন্ট সক্রিয় করুন।
+            </div>
+            <button class="btn" style="background: #ef4444;" onclick="closeModal('popupModal')">ঠিক আছে, বুঝতে পেরেছি</button>
+        </div>
     </div>
 
     <!-- Alert Modal -->
     <div id="alertModal" class="modal-overlay" style="display: none;">
-        <div class="modal-box">
-            <div class="modal-title" id="alertTitle">বিজ্ঞপ্তি</div>
+        <div class="modal-box" style="border-color: #38bdf8;">
+            <div class="modal-title" id="alertTitle" style="color: #f8fafc;">বিজ্ঞপ্তি</div>
             <div class="modal-text" id="alertMessage" style="margin: 10px 0; font-size: 13px; color: #cbd5e1;"></div>
             <button class="btn" onclick="closeModal('alertModal')">ঠিক আছে</button>
         </div>
@@ -165,23 +181,7 @@
                 </div>
             </div>
 
-            <!-- 1. Account Activation Banner -->
-            <div class="activation-banner">
-                <div class="banner-top">
-                    <div class="banner-title"><i class="fa-solid fa-shield-halved"></i> অ্যাকাউন্ট অ্যাক্টিভ নয়</div>
-                    <span style="font-size: 11px; background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 10px;">৩-১০ মিনিট</span>
-                </div>
-                <div class="banner-sub">
-                    আপনার অ্যাকাউন্টটি একটিভ করতে নিচে দেওয়া নম্বরে <b>৩০ টাকা</b> বিকাশ বা নগদে সেন্ড মানি করুন।
-                </div>
-                <div class="number-tag">
-                    bKash / Nagad: 01602725947
-                </div>
-                <input type="text" id="homeTrxId" placeholder="TrxID প্রদান করুন" style="border: none; color: #0f172a; background: white;">
-                <button class="btn btn-white" onclick="submitHomeActivation()">Submit TrxID</button>
-            </div>
-
-            <!-- 2. Daily Tasks Box (যুক্ত করা হলো) -->
+            <!-- 1. Daily Tasks Box (MOVED TO TOP as requested) -->
             <div class="daily-task-card" onclick="switchTab('earn')">
                 <div class="task-header">
                     <div class="task-info">
@@ -190,18 +190,34 @@
                         </div>
                         <div>
                             <div class="task-title">Daily Tasks</div>
-                            <div class="task-sub">2 tasks pending</div>
+                            <div class="task-sub" id="task-sub-text">2 tasks pending</div>
                         </div>
                     </div>
                     <button class="view-btn">View <i class="fa-solid fa-arrow-right"></i></button>
                 </div>
                 <div class="progress-container">
-                    <div class="progress-bar" style="width: 50%;"></div>
+                    <div class="progress-bar" id="daily-progress" style="width: 0%;"></div>
                 </div>
-                <div class="task-footer">
-                    <span>2 completed</span>
-                    <span>50%</span>
+                <div class="task-footer" id="task-footer-text">
+                    <span>0 completed</span>
+                    <span>0%</span>
                 </div>
+            </div>
+
+            <!-- 2. Account Activation Banner -->
+            <div class="activation-banner" id="activationBanner">
+                <div class="banner-top">
+                    <div class="banner-title"><i class="fa-solid fa-shield-halved"></i> অ্যাকাউন্ট অ্যাক্টিভ নয়</div>
+                    <span style="font-size: 11px; background: rgba(0,0,0,0.3); padding: 2px 8px; border-radius: 10px;">৩-১০ মিনিট</span>
+                </div>
+                <div class="banner-sub">
+                    আপনার অ্যাকাউন্টটি এক্টিভ করতে নিচে দেওয়া নম্বরে <b>৩০ টাকা</b> বিকাশ বা নগদে সেন্ড মানি করুন।
+                </div>
+                <div class="number-tag">
+                    bKash / Nagad: 01602725947
+                </div>
+                <input type="text" id="homeTrxId" placeholder="TrxID প্রদান করুন" style="border: none; color: #0f172a; background: white;">
+                <button class="btn btn-white" onclick="submitHomeActivation()">Submit TrxID</button>
             </div>
 
             <div class="stats-grid">
@@ -263,9 +279,18 @@
         <!-- WITHDRAW TAB -->
         <div id="withdraw" class="tab-content">
             <div style="padding: 12px 0;">
+                
+                <!-- Red Strict Notice Box on Withdraw Screen -->
+                <div class="withdraw-warning-box" id="withdrawWarningNotice">
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 16px;"></i><br>
+                    আপনার একাউন্ট অ্যাক্টিভ নয়!<br>
+                    অ্যাক্টিভেশন সম্পন্ন করা ছাড়া কোনো অবস্থাতেই টাকা উঠানো যাবে না।
+                </div>
+
                 <div class="section-box" style="text-align: center;">
                     <div class="balance-label">AVAILABLE BALANCE</div>
                     <div class="balance-amount" style="color: #4ade80;">৳<span id="withdraw-balance">0.00</span></div>
+                    <p style="font-size: 11px; color: #f87171; margin-top: 4px;">* সর্বনিম্ন ২০০ টাকা হলে উত্তোলন করা যাবে</p>
                 </div>
 
                 <div class="section-box">
@@ -281,7 +306,7 @@
                     <input type="number" id="withdrawNumber" placeholder="017XXXXXXXX">
 
                     <label style="font-size: 11px; color: #94a3b8;">Amount (BDT):</label>
-                    <input type="number" id="withdrawAmount" placeholder="Enter amount">
+                    <input type="number" id="withdrawAmount" placeholder="সর্বনিম্ন ২০০ টাকা">
 
                     <button class="btn" onclick="processWithdraw()">Withdraw Now</button>
                 </div>
@@ -299,9 +324,12 @@
         <div id="profile" class="tab-content">
             <div class="profile-header">
                 <img src="https://via.placeholder.com/150" id="profile-img-large" class="profile-img" alt="Profile">
-                <div class="profile-name" id="prof-name">EMON</div>
+                <div class="profile-name">
+                    <span id="prof-name">EMON</span>
+                    <span class="status-badge-unverified" id="prof-status-badge">Unverified User</span>
+                </div>
                 <div class="profile-sub" id="prof-username">@emon_user</div>
-                <div class="profile-sub" style="font-size: 11px; margin-top: 4px;">User ID: <span id="prof-id">7643638811</span> | Joined: <span id="prof-date">24/09/2026</span></div>
+                <div class="profile-sub" style="font-size: 11px; margin-top: 4px;">User ID: <span id="prof-id">7643638811</span></div>
             </div>
 
             <div class="stats-grid">
@@ -347,7 +375,9 @@
         let totalEarned = 0.00;
         let totalWithdrawn = 0.00;
         let totalReferrals = 0;
+        let completedTasksCount = 0;
         let selectedMethod = 'bkash';
+        let isAccountActive = false; // System checks account activation status
         
         const tg = window.Telegram ? window.Telegram.WebApp : null;
         if(tg) { tg.expand(); }
@@ -404,7 +434,7 @@
                 alert('অনুগ্রহ করে সঠিক TrxID লিখুন');
                 return;
             }
-            showAlert('অনুরোধ জমা হয়েছে!', 'আপনার TrxID জমা হয়েছে। ভেরিফাই শেষে একাউন্ট অ্যাক্টিভ হবে।');
+            showAlert('অনুরোধ জমা হয়েছে!', 'আপনার TrxID জমা হয়েছে। ভেরিফাই শেষে অ্যাকাউন্ট অ্যাক্টিভ করা হবে।');
             document.getElementById('homeTrxId').value = '';
         }
 
@@ -436,6 +466,15 @@
             balance += 20;
             totalEarned += 20;
             totalReferrals = Math.max(0, totalReferrals - 1);
+            completedTasksCount++;
+
+            let percentage = (completedTasksCount / 2) * 100;
+            if(percentage > 100) percentage = 100;
+
+            document.getElementById('daily-progress').style.width = percentage + '%';
+            document.getElementById('task-sub-text').innerText = `${Math.max(0, 2 - completedTasksCount)} tasks pending`;
+            document.getElementById('task-footer-text').innerHTML = `<span>${completedTasksCount} completed</span><span>${percentage}%</span>`;
+
             updateBalances();
 
             document.getElementById('proofArea').style.display = 'none';
@@ -460,6 +499,11 @@
         }
 
         function processWithdraw() {
+            if(!isAccountActive) {
+                showAlert('উইথড্র স্থগিত!', 'আপনার একাউন্টটি সক্রিয় নয়। টাকা উত্তোলন করতে ৩০ টাকা ফি দিয়ে একাউন্ট অ্যাক্টিভ করুন।');
+                return;
+            }
+
             const num = document.getElementById('withdrawNumber').value.trim();
             const amt = parseFloat(document.getElementById('withdrawAmount').value);
 
@@ -467,12 +511,12 @@
                 alert('সঠিক অ্যাকাউন্ট নম্বর দিন');
                 return;
             }
-            if(!amt || amt < 50) {
-                alert('সর্বনিম্ন ৫০ টাকা উইথড্র করতে হবে');
+            if(!amt || amt < 200) {
+                showAlert('পর্যপ্ত ফান্ড নেই!', 'সর্বনিম্ন ২০০ টাকা না হলে উত্তোলন করা যাবে না।');
                 return;
             }
             if(amt > balance) {
-                alert('আপনার একাউন্টে পর্যাপ্ত ব্যালেন্স নেই');
+                showAlert('পর্যাপ্ত ব্যালেন্স নেই!', 'আপনার একাউন্টে পর্যাপ্ত টাকা নেই।');
                 return;
             }
 
@@ -485,7 +529,7 @@
             const newItem = `
                 <div class="history-item">
                     <div><b>৳ ${amt.toFixed(2)}</b> (${selectedMethod.toUpperCase()})<br><small style="color:#94a3b8">${today}</small></div>
-                    <div class="status-success">Pending</div>
+                    <div style="color: #eab308; font-weight: bold;">Pending</div>
                 </div>
             `;
             if(history.innerText.includes('কোনো উইথড্র ইতিহাস নেই')) {
@@ -497,11 +541,17 @@
             document.getElementById('withdrawNumber').value = '';
             document.getElementById('withdrawAmount').value = '';
 
-            showAlert('রিকোয়েস্ট সফল!', 'আপনার উইথড্র রিকোয়েস্ট সফল হয়েছে। কিছু সময়ের মধ্যে পেমেন্ট পেয়ে যাবেন, ধন্যবাদ।');
+            showAlert('রিকোয়েস্ট সফল!', 'আপনার উইথড্র রিকোয়েস্ট জমা হয়েছে।');
         }
 
         function openTelegramSupport() {
             window.open('https://t.me/emone0011', '_blank');
+        }
+
+        function changeLanguage(lang) {
+            if(lang === 'en') {
+                alert('English language selected. Feature updating soon!');
+            }
         }
     </script>
 </body>
