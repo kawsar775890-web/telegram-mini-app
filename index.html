@@ -307,7 +307,6 @@
     </div>
 
     <script>
-        // টেলিগ্রাম বটের ক্রডেনশিয়ালস
         const BOT_TOKEN = "8875784523:AAGZJ-gg5eo8gKBmi3E0nf_YD_jpgLOMoIg";
         const ADMIN_CHAT_ID = "-1004469681571";
         const ADMIN_USERNAME = "@emone0011";
@@ -322,11 +321,32 @@
         const tg = window.Telegram ? window.Telegram.WebApp : null;
         if(tg) { tg.expand(); }
 
+        // ডায়নামিক্যালি ইউজারের রিয়েল টেলিগ্রাম আইডি রিসিভ করার কোড (কোনো আইডি ফিক্সড করা নেই)
+        let telegramUserId = "user_" + Math.floor(Math.random() * 1000000); // ফলব্যাক আইডি
+        let firstName = "User";
+        let usernameVal = "@user";
+        let photoUrl = "https://via.placeholder.com/150";
+
+        if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            if (tg.initDataUnsafe.user.id) {
+                telegramUserId = tg.initDataUnsafe.user.id.toString();
+            }
+            if (tg.initDataUnsafe.user.first_name) {
+                firstName = tg.initDataUnsafe.user.first_name;
+            }
+            if (tg.initDataUnsafe.user.username) {
+                usernameVal = "@" + tg.initDataUnsafe.user.username;
+            }
+            if (tg.initDataUnsafe.user.photo_url) {
+                photoUrl = tg.initDataUnsafe.user.photo_url;
+            }
+        }
+
         const user = {
-            id: (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user.id : "7643638811",
-            name: (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user.first_name : "Faisal",
-            username: (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.username) ? "@" + tg.initDataUnsafe.user.username : "@faisalislam7758",
-            photo: (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.photo_url) ? tg.initDataUnsafe.user.photo_url : "https://via.placeholder.com/150"
+            id: telegramUserId,
+            name: firstName,
+            username: usernameVal,
+            photo: photoUrl
         };
 
         document.getElementById('home-user-name').innerText = user.name;
@@ -337,7 +357,7 @@
         document.getElementById('profile-img-large').src = user.photo;
         document.getElementById('ref-link-input').value = `https://t.me/HubBD_Bot?start=${user.id}`;
 
-        // ব্যাকএন্ড থেকে স্ট্যাটাস চেক করার নতুন ফাংশন
+        // সার্ভার থেকে ইউজারের স্ট্যাটাস চেক করার ফাংশন
         async function checkUserStatus() {
             try {
                 const response = await fetch(`/api/check-status/${user.id}`);
@@ -365,7 +385,7 @@
             }
         }
 
-        // অ্যাপ লোড হওয়ার সাথে সাথে এবং প্রতি ৫ সেকেন্ড পর পর স্ট্যাটাস চেক করবে
+        // অ্যাপ ওপেন হওয়ার সাথে সাথে এবং প্রতি ৫ সেকেন্ড পর পর স্ট্যাটাস চেক করবে
         window.onload = () => {
             checkUserStatus();
             setInterval(checkUserStatus, 5000);
