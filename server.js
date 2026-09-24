@@ -1,40 +1,25 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
 const path = require('path');
 
 const app = express();
-app.use(cors());
 app.use(express.json());
+
+// Static Files Serve
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Database Schema
-const userSchema = new mongoose.Schema({
-  telegramId: { type: String, required: true, unique: true },
-  name: String,
-  username: String,
-  isActive: { type: Boolean, default: false },
-  balance: { type: Number, default: 0 },
-  totalEarned: { type: Number, default: 0 },
-  referrals: { type: Number, default: 0 },
-  referredBy: String,
-  canWatchVideo: { type: Boolean, default: false },
-  withdrawHistory: Array,
-  createdAt: { type: Date, default: Date.now }
-});
-
-const User = mongoose.model('User', userSchema);
-
-// MongoDB Connection
+// Database Connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB Connected'))
-  .catch(err => console.log('DB Error:', err));
+  .catch(err => console.error(err));
 
-// API Routes
-app.post('/api/user/init', async (req, res) => {
-  const { telegramId, name, username, referredBy } = req.body;
-  try {
-    let user = await User.findOne({ telegramId });
+// Root Route
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));    let user = await User.findOne({ telegramId });
     if (!user) {
       user = new User({ telegramId, name, username, referredBy });
       await user.save();
