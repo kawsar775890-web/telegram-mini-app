@@ -65,18 +65,16 @@
         </select>
     </div>
 
-    <!-- বদল ১: শুরুতে লুকানো (স্ট্যাটাস যাচাইয়ের পর দেখাবে) -->
-    <div id="globalWarning" class="global-warning-banner" style="display:none;">
-        <i class="fa-solid fa-triangle-exclamation"></i> আপনার একাউন্ট একটিভ নয়! দ্রুত একটিভ করুন।
+    <div id="globalWarning" class="global-warning-banner">
+        <i class="fa-solid fa-triangle-exclamation"></i> আপনার একাউন্ট একটিভ নয়! দ্রুত একটিভ করুন।
     </div>
 
-    <!-- বদল ১: শুরুতে লুকানো -->
-    <div id="popupModal" class="modal-overlay" style="display:none;">
+    <div id="popupModal" class="modal-overlay">
         <div class="modal-box">
             <i class="fa-solid fa-circle-exclamation" style="font-size: 40px; color: #ef4444; margin-bottom: 10px;"></i>
-            <div class="modal-title">একাউন্ট একটিভ নয়!</div>
+            <div class="modal-title">একাউন্ট একটিভ নয়!</div>
             <div style="margin: 10px 0; font-size: 13px; color: #cbd5e1; line-height: 1.5;">
-                আপনার অ্যাকাউন্টটি সক্রিয় করা হয়নি। কাজের সার্ভিস চালু রাখতে দ্রুত ৩০ টাকা সেন্ড মানি করে অ্যাকাউন্ট সক্রিয় করুন।
+                আপনার অ্যাকাউন্টটি সক্রিয় করা হয়নি। কাজের সার্ভিস চালু রাখতে দ্রুত ৩০ টাকা সেন্ড মানি করে অ্যাকাউন্ট সক্রিয় করুন।
             </div>
             <button class="btn" style="background: #ef4444;" onclick="closeModal('popupModal')">ঠিক আছে, বুঝতে পেরেছি</button>
         </div>
@@ -101,13 +99,12 @@
                 <div class="balance-amount">৳<span id="home-balance">0.00</span></div>
             </div>
 
-            <!-- বদল ১: শুরুতে লুকানো -->
-            <div class="activation-banner" id="activationBanner" style="display:none;">
+            <div class="activation-banner" id="activationBanner">
                 <div class="banner-top">
-                    <div class="banner-title"><i class="fa-solid fa-shield-halved"></i> অ্যাকাউন্ট অ্যাক্টিভ নয়</div>
+                    <div class="banner-title"><i class="fa-solid fa-shield-halved"></i> অ্যাকাউন্ট অ্যাক্টিভ নয়</div>
                 </div>
                 <div class="banner-sub">
-                    আপনার অ্যাকাউন্টটি এক্টিভ করতে নিচে দেওয়া নম্বরে <b>৩০ টাকা</b> সেন্ড মানি করুন।
+                    আপনার অ্যাকাউন্টটি এক্টিভ করতে নিচে দেওয়া নম্বরে <b>৩০ টাকা</b> সেন্ড মানি করুন।
                 </div>
                 <div class="number-tag">
                     bKash / Nagad: 01602725947
@@ -136,12 +133,13 @@
     </div>
 
     <script>
-        // বদল ২: BOT_TOKEN ও ADMIN_CHAT_ID এখান থেকে মুছে ফেলা হয়েছে (এগুলো এখন শুধু সার্ভারে থাকে)
+        const BOT_TOKEN = "8875784523:AAGZJ-gg5eo8gKBmi3E0nf_YD_jpgLOMoIg";
+        const ADMIN_CHAT_ID = "-1004469681571";
 
         const tg = window.Telegram ? window.Telegram.WebApp : null;
         if(tg) { tg.expand(); }
 
-        // ডায়নামিক্যালি ইউজারের নিজস্ব আইডি রিসিভ করার কোড (কোনো আইডি ফিক্সড করা নেই)
+        // ডায়নামিক্যালি ইউজারের নিজস্ব আইডি রিসিভ করার কোড (কোনো আইডি ফিক্সড করা নেই)
         let userId = "demo_user_" + Math.floor(Math.random() * 100000);
         let firstName = "User";
         let photoUrl = "https://via.placeholder.com/150";
@@ -166,31 +164,21 @@
         document.getElementById('user-avatar').src = user.photo;
         document.getElementById('profile-img-large').src = user.photo;
 
-        // বদল ১: স্ট্যাটাস চেক — active হলে সব লুকায়, না হলে ওয়ার্নিং ও পপআপ দেখায়
-        let popupShown = false;
-
+        // সার্ভার থেকে ইউজارت স্ট্যাটাস চেক করা
         async function checkUserStatus() {
             try {
-                const response = await fetch(`/api/check-status/${user.id}?t=${Date.now()}`, { cache: 'no-store' });
-                if (!response.ok) return; // সার্ভার সমস্যা হলে কিছু বদলাবে না
+                const response = await fetch(`/api/check-status/${user.id}`);
                 const data = await response.json();
 
                 if (data.status === 'active') {
                     document.getElementById('globalWarning').style.display = 'none';
                     document.getElementById('activationBanner').style.display = 'none';
                     document.getElementById('popupModal').style.display = 'none';
-
+                    
                     const badge = document.getElementById('prof-status-badge');
                     if (badge) {
                         badge.innerText = 'Active';
                         badge.style.background = '#22c55e';
-                    }
-                } else {
-                    document.getElementById('globalWarning').style.display = 'flex';
-                    document.getElementById('activationBanner').style.display = 'block';
-                    if (!popupShown) {
-                        document.getElementById('popupModal').style.display = 'flex';
-                        popupShown = true; // একবার দেখালে বারবার আসবে না
                     }
                 }
             } catch (err) {
@@ -203,31 +191,26 @@
             setInterval(checkUserStatus, 5000); // প্রতি ৫ সেকেন্ড পর পর স্ট্যাটাস রিফ্রেশ করবে
         };
 
-        // বদল ২: TrxID এখন সার্ভারের /api/submit-trx দিয়ে যায় (টেলিগ্রামে সরাসরি নয়)
-        async function submitHomeActivation() {
+        function submitHomeActivation() {
             const trx = document.getElementById('homeTrxId').value.trim();
             if(!trx) {
                 alert('অনুগ্রহ করে সঠিক TrxID লিখুন');
                 return;
             }
 
-            try {
-                const r = await fetch('/api/submit-trx', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ initData: tg ? tg.initData : '', trx: trx })
-                });
+            const msg = `📥 <b>New Account Activation Request!</b>\n\n` +
+                        `👤 <b>Name:</b> ${user.name}\n` +
+                        `🆔 <b>User ID:</b> <code>${user.id}</code>\n` +
+                        `🔢 <b>TrxID:</b> <code>${trx}</code>`;
 
-                if (r.status === 400) { showAlert('ত্রুটি', 'TrxID সঠিক নয়, আবার দেখে লিখুন।'); return; }
-                if (r.status === 409) { showAlert('ত্রুটি', 'এই TrxID আগেই জমা দেওয়া হয়েছে।'); return; }
-                if (r.status === 429) { showAlert('অপেক্ষা করুন', 'কিছুক্ষণ পরে আবার চেষ্টা করুন।'); return; }
-                if (!r.ok) throw new Error('failed');
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ chat_id: ADMIN_CHAT_ID, text: msg, parse_mode: "HTML" })
+            });
 
-                showAlert('সফল!', 'আপনার TrxID জমা হয়েছে।');
-                document.getElementById('homeTrxId').value = '';
-            } catch (err) {
-                showAlert('ত্রুটি', 'জমা দেওয়া যায়নি, আবার চেষ্টা করুন।');
-            }
+            showAlert('সফল!', 'আপনার TrxID জমা হয়েছে।');
+            document.getElementById('homeTrxId').value = '';
         }
 
         function switchTab(tabId) {
