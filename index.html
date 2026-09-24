@@ -59,7 +59,7 @@
         .pm-card { flex: 1; border: 1px solid #334155; background: #0f172a; border-radius: 10px; padding: 8px; text-align: center; cursor: pointer; font-weight: bold; font-size: 13px; color: #cbd5e1; }
         .pm-card.selected.bkash { border-color: #e2136e; background: #831843; color: white; }
         .pm-card.selected.nagad { border-color: #f97316; background: #7c2d12; color: white; }
-        .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; display: flex; justify-around; padding: 8px 0; border-top: 1px solid #334155; z-index: 100; }
+        .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; display: flex; justify-content: space-around; padding: 8px 0; border-top: 1px solid #334155; z-index: 100; }
         .nav-item { color: #94a3b8; text-align: center; font-size: 10px; cursor: pointer; flex: 1; }
         .nav-item i { font-size: 16px; display: block; margin-bottom: 2px; }
         .nav-item.active { color: #38bdf8; font-weight: bold; }
@@ -109,6 +109,7 @@
 
     <div class="container">
         
+        <!-- Home Tab -->
         <div id="home" class="tab-content active">
             <div class="hero-card">
                 <img src="https://via.placeholder.com/150" id="user-avatar" class="user-avatar-top" alt="Profile">
@@ -195,6 +196,7 @@
             </div>
         </div>
 
+        <!-- Earn Tab -->
         <div id="earn" class="tab-content">
             <div style="padding: 12px 0;">
                 <div class="section-box">
@@ -219,6 +221,7 @@
             </div>
         </div>
 
+        <!-- Withdraw Tab -->
         <div id="withdraw" class="tab-content">
             <div style="padding: 12px 0;">
                 <div class="withdraw-warning-box">
@@ -253,6 +256,7 @@
             </div>
         </div>
 
+        <!-- Profile Tab -->
         <div id="profile" class="tab-content">
             <div class="profile-header">
                 <img src="https://via.placeholder.com/150" id="profile-img-large" class="profile-img" alt="Profile">
@@ -286,6 +290,7 @@
 
     </div>
 
+    <!-- Bottom Navigation Bar -->
     <div class="nav-bar">
         <div class="nav-item active" id="nav-home" onclick="switchTab('home')">
             <i class="fa-solid fa-house"></i> Home
@@ -302,7 +307,7 @@
     </div>
 
     <script>
-        // বটের টোকেন এবং তৈরি করা গ্রুপের চ্যাট আইডি
+        // টেলিগ্রাম বটের ক্রডেনশিয়ালস
         const BOT_TOKEN = "8875784523:AAGZJ-gg5eo8gKBmi3E0nf_YD_jpgLOMoIg";
         const ADMIN_CHAT_ID = "-1004469681571";
         const ADMIN_USERNAME = "@emone0011";
@@ -410,6 +415,7 @@
         function updateBalances() {
             document.getElementById('home-balance').innerText = balance.toFixed(2);
             document.getElementById('home-total-earned').innerText = totalEarned.toFixed(2);
+            document.getElementById('home-stat-earned').innerText = totalEarned.toFixed(2);
             document.getElementById('withdraw-balance').innerText = balance.toFixed(2);
             document.getElementById('prof-balance').innerText = balance.toFixed(2);
             document.getElementById('prof-withdrawn').innerText = totalWithdrawn.toFixed(2);
