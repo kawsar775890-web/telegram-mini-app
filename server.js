@@ -5,8 +5,8 @@ const path = require('path');
 const app = express();
 app.use(express.json());
 
-// Serve Static Files from 'public' folder
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve Static Files from Root Directory
+app.use(express.static(__dirname));
 
 // Connect Database
 if (process.env.MONGO_URI) {
@@ -15,9 +15,9 @@ if (process.env.MONGO_URI) {
     .catch(err => console.error('MongoDB Connection Error:', err));
 }
 
-// Serve Frontend
+// Serve index.html from Root
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 const PORT = process.env.PORT || 3000;
