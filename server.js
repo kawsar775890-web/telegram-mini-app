@@ -79,9 +79,6 @@ app.get('/api/check-status/:userId', (req, res) => {
     const status = userStatus.get(userId) || 'unverified';
     res.json({ status: status });
 });
-
-// বট চালু করা
-bot.launch().then(() => console.log("Telegram Bot Backend is Running..."));
 // -------------------------------------------------------------
 
 // Serve Static Files from Root Directory
@@ -99,5 +96,11 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// সঠিক পোর্টে সার্ভার ও বট একসাথে চালু করা
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    // সার্ভার রান হওয়ার পরেই বট চালু হবে
+    bot.launch().then(() => console.log("Telegram Bot Backend is Running..."))
+      .catch(err => console.log("Bot launch error:", err));
+});
