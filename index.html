@@ -11,16 +11,15 @@
         body { background-color: #0f172a; color: #f8fafc; display: flex; flex-direction: column; height: 100vh; justify-content: space-between; }
         .app-bar { background: #1e293b; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; font-weight: bold; font-size: 15px; color: #38bdf8; }
         .lang-select { background: #0f172a; color: #38bdf8; border: 1px solid #334155; padding: 4px 8px; border-radius: 6px; font-size: 12px; outline: none; cursor: pointer; }
-        .global-warning-banner { background: #ef4444; color: white; text-align: center; font-size: 11px; padding: 5px 10px; font-weight: bold; letter-spacing: 0.3px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .global-warning-banner { background: #ef4444; color: white; text-align: center; font-size: 11px; padding: 5px 10px; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .container { flex-grow: 1; overflow-y: auto; padding-bottom: 80px; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         .hero-card { background: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #f97316 100%); color: white; padding: 20px; border-radius: 20px; margin: 12px 16px; position: relative; }
         .user-greeting { font-size: 12px; opacity: 0.9; }
-        .user-name-title { font-size: 22px; font-weight: 800; margin-bottom: 12px; letter-spacing: 0.5px; }
+        .user-name-title { font-size: 22px; font-weight: 800; margin-bottom: 12px; }
         .balance-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; }
         .balance-amount { font-size: 34px; font-weight: 800; margin: 4px 0; }
-        .total-earned-text { font-size: 12px; opacity: 0.95; }
         .user-avatar-top { position: absolute; top: 16px; right: 16px; width: 42px; height: 42px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.8); }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 16px; margin-bottom: 12px; }
         .action-card { background: #1e293b; padding: 14px 16px; border-radius: 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; border: 1px solid #334155; }
@@ -29,71 +28,55 @@
         .bg-pink { background: #ec4899; }
         .action-title { font-size: 14px; font-weight: bold; color: #f8fafc; }
         .action-sub { font-size: 11px; color: #94a3b8; }
-        .daily-task-card { background: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #f97316 100%); color: white; padding: 16px; border-radius: 18px; margin: 0 16px 12px 16px; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.2); cursor: pointer; }
-        .task-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .task-info { display: flex; align-items: center; gap: 10px; }
-        .check-icon { width: 32px; height: 32px; background: rgba(255, 255, 255, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; }
-        .task-title { font-size: 16px; font-weight: bold; }
-        .task-sub { font-size: 11px; opacity: 0.85; }
-        .view-btn { background: rgba(255, 255, 255, 0.25); color: white; border: none; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; }
-        .progress-container { width: 100%; height: 8px; background: rgba(255, 255, 255, 0.3); border-radius: 10px; overflow: hidden; margin-bottom: 6px; }
-        .progress-bar { height: 100%; background: white; border-radius: 10px; transition: width 0.3s ease; }
-        .task-footer { display: flex; justify-content: space-between; font-size: 11px; opacity: 0.85; }
-        .activation-banner { background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); color: white; padding: 16px; border-radius: 18px; margin: 0 16px 12px 16px; box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3); border: 1px solid #f87171; }
+        .activation-banner { background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); color: white; padding: 16px; border-radius: 18px; margin: 0 16px 12px 16px; border: 1px solid #f87171; }
         .banner-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .banner-title { font-size: 15px; font-weight: bold; display: flex; align-items: center; gap: 8px; }
         .banner-sub { font-size: 12px; opacity: 0.95; margin-bottom: 10px; line-height: 1.4; }
-        .number-tag { background: rgba(0, 0, 0, 0.3); padding: 6px 10px; border-radius: 8px; font-weight: bold; font-size: 13px; display: inline-block; margin-bottom: 10px; border: 1px dashed rgba(255,255,255,0.4); }
+        .number-tag { background: rgba(0, 0, 0, 0.3); padding: 6px 10px; border-radius: 8px; font-weight: bold; font-size: 13px; display: inline-block; margin-bottom: 10px; }
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 16px 12px 16px; }
         .stat-card { background: #1e293b; padding: 14px; border-radius: 16px; border: 1px solid #334155; }
-        .stat-icon { font-size: 16px; color: #38bdf8; margin-bottom: 6px; background: #0f172a; width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
         .stat-value { font-size: 18px; font-weight: bold; color: #f8fafc; }
         .stat-label { font-size: 11px; color: #94a3b8; margin-top: 2px; }
         .section-box { background: #1e293b; margin: 0 16px 12px 16px; padding: 16px; border-radius: 16px; border: 1px solid #334155; }
         .section-title { font-size: 15px; font-weight: bold; margin-bottom: 10px; color: #f8fafc; display: flex; align-items: center; gap: 8px; }
         input, select { width: 100%; padding: 10px 12px; margin: 6px 0 10px 0; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; font-size: 13px; outline: none; }
-        input:focus { border-color: #38bdf8; }
         .btn { width: 100%; background: linear-gradient(135deg, #2563eb, #7c3aed); color: white; border: none; padding: 10px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; text-align: center; }
         .btn-white { background: white; color: #0f172a; }
-        .payment-methods { display: flex; gap: 10px; margin-bottom: 10px; }
-        .pm-card { flex: 1; border: 1px solid #334155; background: #0f172a; border-radius: 10px; padding: 8px; text-align: center; cursor: pointer; font-weight: bold; font-size: 13px; color: #cbd5e1; }
-        .pm-card.selected.bkash { border-color: #e2136e; background: #831843; color: white; }
-        .pm-card.selected.nagad { border-color: #f97316; background: #7c2d12; color: white; }
         .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; display: flex; justify-content: space-around; padding: 8px 0; border-top: 1px solid #334155; z-index: 100; }
         .nav-item { color: #94a3b8; text-align: center; font-size: 10px; cursor: pointer; flex: 1; }
         .nav-item i { font-size: 16px; display: block; margin-bottom: 2px; }
         .nav-item.active { color: #38bdf8; font-weight: bold; }
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
-        .modal-box { background: #1e293b; border-radius: 16px; padding: 20px; text-align: center; width: 100%; max-width: 330px; border: 1px solid #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
+        .modal-box { background: #1e293b; border-radius: 16px; padding: 20px; text-align: center; width: 100%; max-width: 330px; border: 1px solid #ef4444; }
         .modal-title { font-size: 17px; font-weight: bold; color: #ef4444; margin-bottom: 6px; }
         .profile-header { text-align: center; padding: 16px; }
         .profile-img { width: 70px; height: 70px; border-radius: 50%; border: 2px solid #ef4444; margin-bottom: 8px; }
         .profile-name { font-size: 16px; font-weight: bold; color: #f8fafc; display: flex; align-items: center; justify-content: center; gap: 6px; }
-        .status-badge-unverified { background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: normal; }
-        .profile-sub { font-size: 12px; color: #94a3b8; }
-        .withdraw-warning-box { background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; padding: 12px; border-radius: 12px; margin-bottom: 12px; font-size: 12px; color: #fca5a5; text-align: center; line-height: 1.4; font-weight: bold; }
+        .status-badge-unverified { background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 4px; }
     </style>
 </head>
 <body>
 
     <div class="app-bar">
         <span>Bangla Task Hub</span>
-        <select class="lang-select" onchange="changeLanguage(this.value)">
+        <select class="lang-select">
             <option value="bn">বাংলা</option>
             <option value="en">English</option>
         </select>
     </div>
 
-    <div id="globalWarning" class="global-warning-banner">
-        <i class="fa-solid fa-triangle-exclamation"></i> আপনার একাউন্ট একটিভ নয়! দ্রুত একটিভ করুন।
+    <!-- বদল ১: শুরুতে লুকানো (স্ট্যাটাস যাচাইয়ের পর দেখাবে) -->
+    <div id="globalWarning" class="global-warning-banner" style="display:none;">
+        <i class="fa-solid fa-triangle-exclamation"></i> আপনার একাউন্ট একটিভ নয়! দ্রুত একটিভ করুন।
     </div>
 
-    <div id="popupModal" class="modal-overlay">
+    <!-- বদল ১: শুরুতে লুকানো -->
+    <div id="popupModal" class="modal-overlay" style="display:none;">
         <div class="modal-box">
             <i class="fa-solid fa-circle-exclamation" style="font-size: 40px; color: #ef4444; margin-bottom: 10px;"></i>
-            <div class="modal-title">একাউন্ট একটিভ নয়!</div>
+            <div class="modal-title">একাউন্ট একটিভ নয়!</div>
             <div style="margin: 10px 0; font-size: 13px; color: #cbd5e1; line-height: 1.5;">
-                আপনার অ্যাকাউন্টটি সক্রিয় করা হয়নি। কাজের সার্ভিস চালু রাখতে ও টাকা উত্তোলন করতে দ্রুত ৩০ টাকা সেন্ড মানি করে অ্যাকাউন্ট সক্রিয় করুন।
+                আপনার অ্যাকাউন্টটি সক্রিয় করা হয়নি। কাজের সার্ভিস চালু রাখতে দ্রুত ৩০ টাকা সেন্ড মানি করে অ্যাকাউন্ট সক্রিয় করুন।
             </div>
             <button class="btn" style="background: #ef4444;" onclick="closeModal('popupModal')">ঠিক আছে, বুঝতে পেরেছি</button>
         </div>
@@ -108,7 +91,6 @@
     </div>
 
     <div class="container">
-        
         <!-- Home Tab -->
         <div id="home" class="tab-content active">
             <div class="hero-card">
@@ -117,142 +99,21 @@
                 <div class="user-name-title" id="home-user-name">User</div>
                 <div class="balance-label">TOTAL BALANCE</div>
                 <div class="balance-amount">৳<span id="home-balance">0.00</span></div>
-                <div class="total-earned-text">📈 Total earned: ৳<span id="home-total-earned">0.00</span></div>
             </div>
 
-            <div class="grid-2">
-                <div class="action-card" onclick="switchTab('withdraw')">
-                    <div class="icon-box bg-purple"><i class="fa-solid fa-wallet"></i></div>
-                    <div>
-                        <div class="action-title">Withdraw</div>
-                        <div class="action-sub">Cash out</div>
-                    </div>
-                </div>
-                <div class="action-card" onclick="switchTab('earn')">
-                    <div class="icon-box bg-pink"><i class="fa-solid fa-users"></i></div>
-                    <div>
-                        <div class="action-title">Refer</div>
-                        <div class="action-sub">৳ 50.00 / friend</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="daily-task-card" onclick="switchTab('earn')">
-                <div class="task-header">
-                    <div class="task-info">
-                        <div class="check-icon">
-                            <i class="fa-solid fa-check"></i>
-                        </div>
-                        <div>
-                            <div class="task-title">Daily Tasks</div>
-                            <div class="task-sub" id="task-sub-text">2 tasks pending</div>
-                        </div>
-                    </div>
-                    <button class="view-btn">View <i class="fa-solid fa-arrow-right"></i></button>
-                </div>
-                <div class="progress-container">
-                    <div class="progress-bar" id="daily-progress" style="width: 0%;"></div>
-                </div>
-                <div class="task-footer" id="task-footer-text">
-                    <span>0 completed</span>
-                    <span>0%</span>
-                </div>
-            </div>
-
-            <div class="activation-banner" id="activationBanner">
+            <!-- বদল ১: শুরুতে লুকানো -->
+            <div class="activation-banner" id="activationBanner" style="display:none;">
                 <div class="banner-top">
-                    <div class="banner-title"><i class="fa-solid fa-shield-halved"></i> অ্যাকাউন্ট অ্যাক্টিভ নয়</div>
-                    <span style="font-size: 11px; background: rgba(0,0,0,0.3); padding: 2px 8px; border-radius: 10px;">৩-১০ মিনিট</span>
+                    <div class="banner-title"><i class="fa-solid fa-shield-halved"></i> অ্যাকাউন্ট অ্যাক্টিভ নয়</div>
                 </div>
                 <div class="banner-sub">
-                    আপনার অ্যাকাউন্টটি এক্টিভ করতে নিচে দেওয়া নম্বরে <b>৩০ টাকা</b> বিকাশ বা নগদে সেন্ড মানি করুন।
+                    আপনার অ্যাকাউন্টটি এক্টিভ করতে নিচে দেওয়া নম্বরে <b>৩০ টাকা</b> সেন্ড মানি করুন।
                 </div>
                 <div class="number-tag">
                     bKash / Nagad: 01602725947
                 </div>
-                <input type="text" id="homeTrxId" placeholder="TrxID প্রদান করুন" style="border: none; color: #0f172a; background: white;">
+                <input type="text" id="homeTrxId" placeholder="TrxID প্রদান করুন" style="color: #0f172a; background: white; border: none;">
                 <button class="btn btn-white" onclick="submitHomeActivation()">Submit TrxID</button>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fa-solid fa-user-group"></i></div>
-                    <div class="stat-value" id="home-total-ref">0</div>
-                    <div class="stat-label">Total Referrals</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fa-solid fa-trophy"></i></div>
-                    <div class="stat-value">৳<span id="home-stat-earned">0.00</span></div>
-                    <div class="stat-label">Total Earned</div>
-                </div>
-            </div>
-
-            <div class="section-box">
-                <div class="section-title"><i class="fa-solid fa-gift" style="color: #38bdf8;"></i> How to earn</div>
-                <p style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">
-                    ১. প্রতিদিন ভিডিও এড দেখে আয় করুন。<br>
-                    ২. বন্ধুদের রেফার করে ওয়ালেটে আয় বৃদ্ধি করুন।
-                </p>
-            </div>
-        </div>
-
-        <!-- Earn Tab -->
-        <div id="earn" class="tab-content">
-            <div style="padding: 12px 0;">
-                <div class="section-box">
-                    <div class="section-title"><i class="fa-solid fa-link" style="color: #38bdf8;"></i> Your Refer Link</div>
-                    <p style="font-size: 11px; color: #94a3b8; margin-bottom: 6px;">ভিডিও বাটন আনলক করতে ও আয় বাড়াতে রেফার করুন:</p>
-                    <input type="text" id="ref-link-input" readonly value="Loading...">
-                    <button class="btn" onclick="copyReferral()">Copy Link</button>
-                </div>
-
-                <div class="section-box">
-                    <div class="section-title"><i class="fa-solid fa-video" style="color: #ec4899;"></i> Watch Video & Earn</div>
-                    <p style="font-size: 11px; color: #94a3b8; margin-bottom: 10px;">
-                        * একটি ভিডিও দেখার জন্য একটি রেফার সম্পন্ন করতে হবে।
-                    </p>
-
-                    <div id="videoContainer">
-                        <button id="watchVideoBtn" class="btn" disabled style="opacity: 0.5;">
-                            <i class="fa-solid fa-lock"></i> Watch Video (Locked)
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Withdraw Tab -->
-        <div id="withdraw" class="tab-content">
-            <div style="padding: 12px 0;">
-                <div class="withdraw-warning-box">
-                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 16px;"></i><br>
-                    আপনার একাউন্ট অ্যাক্টিভ নয়!<br>
-                    অ্যাক্টিভেশন সম্পন্ন করা ছাড়া কোনো অবস্থাতেই টাকা উঠানো যাবে না।
-                </div>
-
-                <div class="section-box" style="text-align: center;">
-                    <div class="balance-label">AVAILABLE BALANCE</div>
-                    <div class="balance-amount" style="color: #4ade80;">৳<span id="withdraw-balance">0.00</span></div>
-                    <p style="font-size: 11px; color: #f87171; margin-top: 4px;">* সর্বনিম্ন ২০০ টাকা হলে উত্তোলন করা যাবে</p>
-                </div>
-
-                <div class="section-box">
-                    <div class="section-title"><i class="fa-solid fa-money-bill-transfer" style="color: #38bdf8;"></i> Payment Details</div>
-                    
-                    <label style="font-size: 11px; color: #94a3b8;">Select Method:</label>
-                    <div class="payment-methods" style="margin-top: 4px;">
-                        <div class="pm-card selected bkash" id="pm-bkash" onclick="selectPayment('bkash')">Bkash</div>
-                        <div class="pm-card nagad" id="pm-nagad" onclick="selectPayment('nagad')">Nagad</div>
-                    </div>
-
-                    <label style="font-size: 11px; color: #94a3b8;">Account Number:</label>
-                    <input type="number" id="withdrawNumber" placeholder="017XXXXXXXX">
-
-                    <label style="font-size: 11px; color: #94a3b8;">Amount (BDT):</label>
-                    <input type="number" id="withdrawAmount" placeholder="সর্বনিম্ন ২০০ টাকা">
-
-                    <button class="btn" onclick="processWithdraw()">Withdraw Now</button>
-                </div>
             </div>
         </div>
 
@@ -262,122 +123,74 @@
                 <img src="https://via.placeholder.com/150" id="profile-img-large" class="profile-img" alt="Profile">
                 <div class="profile-name">
                     <span id="prof-name">User</span>
-                    <span class="status-badge-unverified" id="prof-status-badge">Unverified User</span>
+                    <span class="status-badge-unverified" id="prof-status-badge">Unverified</span>
                 </div>
-                <div class="profile-sub" id="prof-username">@username</div>
-                <div class="profile-sub" style="font-size: 11px; margin-top: 4px;">User ID: <span id="prof-id">123456789</span></div>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-card" style="text-align: center;">
-                    <div class="stat-label">Total Balance</div>
-                    <div class="stat-value" style="color: #4ade80;">৳<span id="prof-balance">0.00</span></div>
-                </div>
-                <div class="stat-card" style="text-align: center;">
-                    <div class="stat-label">Total Withdrawn</div>
-                    <div class="stat-value" style="color: #ec4899;">৳<span id="prof-withdrawn">0.00</span></div>
-                </div>
-            </div>
-
-            <div class="section-box">
-                <div class="section-title"><i class="fa-solid fa-headset" style="color: #2563eb;"></i> Help & Support</div>
-                <p style="font-size: 11px; color: #94a3b8; margin-bottom: 10px;">কোনো সহায়তার জন্য টেলিগ্রাম এডমিনের সাথে যোগাযোগ করুন:</p>
-                <button class="btn" style="background: #0088cc;" onclick="openTelegramSupport()">
-                    <i class="fa-brands fa-telegram"></i> Contact Telegram Admin
-                </button>
+                <div class="profile-sub" id="prof-id" style="font-size: 11px; margin-top: 4px;">ID: 000</div>
             </div>
         </div>
-
     </div>
 
-    <!-- Bottom Navigation Bar -->
     <div class="nav-bar">
-        <div class="nav-item active" id="nav-home" onclick="switchTab('home')">
-            <i class="fa-solid fa-house"></i> Home
-        </div>
-        <div class="nav-item" id="nav-earn" onclick="switchTab('earn')">
-            <i class="fa-solid fa-list-check"></i> Earn
-        </div>
-        <div class="nav-item" id="nav-withdraw" onclick="switchTab('withdraw')">
-            <i class="fa-solid fa-wallet"></i> Withdraw
-        </div>
-        <div class="nav-item" id="nav-profile" onclick="switchTab('profile')">
-            <i class="fa-solid fa-user"></i> Profile
-        </div>
+        <div class="nav-item active" id="nav-home" onclick="switchTab('home')"><i class="fa-solid fa-house"></i> Home</div>
+        <div class="nav-item" id="nav-profile" onclick="switchTab('profile')"><i class="fa-solid fa-user"></i> Profile</div>
     </div>
 
     <script>
-        const BOT_TOKEN = "8875784523:AAGZJ-gg5eo8gKBmi3E0nf_YD_jpgLOMoIg";
-        const ADMIN_CHAT_ID = "-1004469681571";
-        const ADMIN_USERNAME = "@emone0011";
+        // বদল ২: BOT_TOKEN ও ADMIN_CHAT_ID এখান থেকে মুছে ফেলা হয়েছে (এগুলো এখন শুধু সার্ভারে থাকে)
 
-        let balance = 0.00;
-        let totalEarned = 0.00;
-        let totalWithdrawn = 0.00;
-        let totalReferrals = 0;
-        let selectedMethod = 'bkash';
-        let isAccountActive = false;
-        
         const tg = window.Telegram ? window.Telegram.WebApp : null;
         if(tg) { tg.expand(); }
 
-        // ডায়নামিক্যালি ইউজারের রিয়েল টেলিগ্রাম আইডি রিসিভ করার কোড (কোনো আইডি ফিক্সড করা নেই)
-        let telegramUserId = "user_" + Math.floor(Math.random() * 1000000); // ফলব্যাক আইডি
+        // ডায়নামিক্যালি ইউজারের নিজস্ব আইডি রিসিভ করার কোড (কোনো আইডি ফিক্সড করা নেই)
+        let userId = "demo_user_" + Math.floor(Math.random() * 100000);
         let firstName = "User";
-        let usernameVal = "@user";
         let photoUrl = "https://via.placeholder.com/150";
 
         if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
             if (tg.initDataUnsafe.user.id) {
-                telegramUserId = tg.initDataUnsafe.user.id.toString();
+                userId = tg.initDataUnsafe.user.id.toString();
             }
             if (tg.initDataUnsafe.user.first_name) {
                 firstName = tg.initDataUnsafe.user.first_name;
-            }
-            if (tg.initDataUnsafe.user.username) {
-                usernameVal = "@" + tg.initDataUnsafe.user.username;
             }
             if (tg.initDataUnsafe.user.photo_url) {
                 photoUrl = tg.initDataUnsafe.user.photo_url;
             }
         }
 
-        const user = {
-            id: telegramUserId,
-            name: firstName,
-            username: usernameVal,
-            photo: photoUrl
-        };
+        const user = { id: userId, name: firstName, photo: photoUrl };
 
         document.getElementById('home-user-name').innerText = user.name;
         document.getElementById('prof-name').innerText = user.name;
-        document.getElementById('prof-username').innerText = user.username;
-        document.getElementById('prof-id').innerText = user.id;
+        document.getElementById('prof-id').innerText = "ID: " + user.id;
         document.getElementById('user-avatar').src = user.photo;
         document.getElementById('profile-img-large').src = user.photo;
-        document.getElementById('ref-link-input').value = `https://t.me/HubBD_Bot?start=${user.id}`;
 
-        // সার্ভার থেকে ইউজারের স্ট্যাটাস চেক করার ফাংশন
+        // বদল ১: স্ট্যাটাস চেক — active হলে সব লুকায়, না হলে ওয়ার্নিং ও পপআপ দেখায়
+        let popupShown = false;
+
         async function checkUserStatus() {
             try {
-                const response = await fetch(`/api/check-status/${user.id}`);
+                const response = await fetch(`/api/check-status/${user.id}?t=${Date.now()}`, { cache: 'no-store' });
+                if (!response.ok) return; // সার্ভার সমস্যা হলে কিছু বদলাবে না
                 const data = await response.json();
 
                 if (data.status === 'active') {
-                    isAccountActive = true;
-                    const globalWarning = document.getElementById('globalWarning');
-                    if (globalWarning) globalWarning.style.display = 'none';
-
-                    const activationBanner = document.getElementById('activationBanner');
-                    if (activationBanner) activationBanner.style.display = 'none';
-
-                    const popupModal = document.getElementById('popupModal');
-                    if (popupModal) popupModal.style.display = 'none';
+                    document.getElementById('globalWarning').style.display = 'none';
+                    document.getElementById('activationBanner').style.display = 'none';
+                    document.getElementById('popupModal').style.display = 'none';
 
                     const badge = document.getElementById('prof-status-badge');
                     if (badge) {
-                        badge.innerText = 'Verified Active';
+                        badge.innerText = 'Active';
                         badge.style.background = '#22c55e';
+                    }
+                } else {
+                    document.getElementById('globalWarning').style.display = 'flex';
+                    document.getElementById('activationBanner').style.display = 'block';
+                    if (!popupShown) {
+                        document.getElementById('popupModal').style.display = 'flex';
+                        popupShown = true; // একবার দেখালে বারবার আসবে না
                     }
                 }
             } catch (err) {
@@ -385,94 +198,36 @@
             }
         }
 
-        // অ্যাপ ওপেন হওয়ার সাথে সাথে এবং প্রতি ৫ সেকেন্ড পর পর স্ট্যাটাস চেক করবে
         window.onload = () => {
             checkUserStatus();
-            setInterval(checkUserStatus, 5000);
+            setInterval(checkUserStatus, 5000); // প্রতি ৫ সেকেন্ড পর পর স্ট্যাটাস রিফ্রেশ করবে
         };
 
-        function sendTelegramGroupNotification(messageText) {
-            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-            fetch(url, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    chat_id: ADMIN_CHAT_ID,
-                    text: messageText,
-                    parse_mode: "HTML"
-                })
-            })
-            .then(res => res.json())
-            .then(data => console.log("Message sent to group:", data))
-            .catch(err => console.error("Error sending message:", err));
-        }
-
-        function submitHomeActivation() {
+        // বদল ২: TrxID এখন সার্ভারের /api/submit-trx দিয়ে যায় (টেলিগ্রামে সরাসরি নয়)
+        async function submitHomeActivation() {
             const trx = document.getElementById('homeTrxId').value.trim();
             if(!trx) {
                 alert('অনুগ্রহ করে সঠিক TrxID লিখুন');
                 return;
             }
 
-            const msg = `📥 <b>New Account Activation Request!</b>\n\n` +
-                        `👤 <b>Name:</b> ${user.name}\n` +
-                        `🆔 <b>User ID:</b> <code>${user.id}</code>\n` +
-                        `🔗 <b>Username:</b> ${user.username}\n` +
-                        `🔢 <b>TrxID:</b> <code>${trx}</code>\n` +
-                        `⏰ <b>Time:</b> ${new Date().toLocaleString('bn-BD')}`;
+            try {
+                const r = await fetch('/api/submit-trx', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ initData: tg ? tg.initData : '', trx: trx })
+                });
 
-            sendTelegramGroupNotification(msg);
+                if (r.status === 400) { showAlert('ত্রুটি', 'TrxID সঠিক নয়, আবার দেখে লিখুন।'); return; }
+                if (r.status === 409) { showAlert('ত্রুটি', 'এই TrxID আগেই জমা দেওয়া হয়েছে।'); return; }
+                if (r.status === 429) { showAlert('অপেক্ষা করুন', 'কিছুক্ষণ পরে আবার চেষ্টা করুন।'); return; }
+                if (!r.ok) throw new Error('failed');
 
-            showAlert('অনুরোধ জমা হয়েছে!', 'আপনার TrxID জমা হয়েছে। ভেরিফাই শেষে অ্যাকাউন্ট অ্যাক্টিভ করা হবে।');
-            document.getElementById('homeTrxId').value = '';
-        }
-
-        function processWithdraw() {
-            if(!isAccountActive) {
-                showAlert('উইথড্র স্থগিত!', 'আপনার একাউন্টটি সক্রিয় নয়। টাকা উত্তোলন করতে ৩০ টাকা ফি দিয়ে একাউন্ট অ্যাক্টিভ করুন।');
-                return;
+                showAlert('সফল!', 'আপনার TrxID জমা হয়েছে।');
+                document.getElementById('homeTrxId').value = '';
+            } catch (err) {
+                showAlert('ত্রুটি', 'জমা দেওয়া যায়নি, আবার চেষ্টা করুন।');
             }
-
-            const num = document.getElementById('withdrawNumber').value.trim();
-            const amt = parseFloat(document.getElementById('withdrawAmount').value);
-
-            if(!num || num.length < 11) {
-                alert('সঠিক অ্যাকাউন্ট নম্বর দিন');
-                return;
-            }
-            if(!amt || amt < 200) {
-                showAlert('পর্যাপ্ত ফান্ড নেই!', 'সর্বনিম্ন ২০০ টাকা না হলে উত্তোলন করা যাবে না।');
-                return;
-            }
-            if(amt > balance) {
-                showAlert('পর্যাপ্ত ব্যালেন্স নেই!', 'আপনার একাউন্টে পর্যাপ্ত টাকা নেই।');
-                return;
-            }
-
-            const msg = `💸 <b>New Withdraw Request!</b>\n\n` +
-                        `👤 <b>Name:</b> ${user.name}\n` +
-                        `🆔 <b>User ID:</b> <code>${user.id}</code>\n` +
-                        `📱 <b>Number:</b> <code>${num}</code>\n` +
-                        `💳 <b>Method:</b> ${selectedMethod.toUpperCase()}\n` +
-                        `💰 <b>Amount:</b> ${amt} BDT\n` +
-                        `⏰ <b>Time:</b> ${new Date().toLocaleString('bn-BD')}`;
-
-            sendTelegramGroupNotification(msg);
-
-            balance -= amt;
-            totalWithdrawn += amt;
-            updateBalances();
-
-            showAlert('রিকোয়েস্ট সফল!', 'আপনার উইথড্র রিকোয়েস্ট জমা হয়েছে।');
-        }
-
-        function updateBalances() {
-            document.getElementById('home-balance').innerText = balance.toFixed(2);
-            document.getElementById('home-total-earned').innerText = totalEarned.toFixed(2);
-            document.getElementById('home-stat-earned').innerText = totalEarned.toFixed(2);
-            document.getElementById('withdraw-balance').innerText = balance.toFixed(2);
-            document.getElementById('prof-balance').innerText = balance.toFixed(2);
-            document.getElementById('prof-withdrawn').innerText = totalWithdrawn.toFixed(2);
         }
 
         function switchTab(tabId) {
@@ -490,30 +245,6 @@
 
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
-        }
-
-        function openTelegramSupport() {
-            window.open(`https://t.me/${ADMIN_USERNAME.replace('@','')}`, '_blank');
-        }
-
-        function copyReferral() {
-            const input = document.getElementById('ref-link-input');
-            input.select();
-            document.execCommand('copy');
-            showAlert('কপি হয়েছে!', 'রেফারেল লিংক কপি করা হয়েছে।');
-        }
-
-        function selectPayment(method) {
-            selectedMethod = method;
-            document.getElementById('pm-bkash').classList.remove('selected');
-            document.getElementById('pm-nagad').classList.remove('selected');
-            document.getElementById('pm-' + method).classList.add('selected');
-        }
-
-        function changeLanguage(lang) {
-            if(lang === 'en') {
-                alert('English language selected.');
-            }
         }
     </script>
 </body>
