@@ -9,7 +9,7 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         
-        /* Halka Dark Theme */
+        /* Dark Theme */
         body { background-color: #0f172a; color: #f8fafc; display: flex; flex-direction: column; height: 100vh; justify-content: space-between; }
         
         /* App Bar */
@@ -37,7 +37,7 @@
         .action-title { font-size: 14px; font-weight: bold; color: #f8fafc; }
         .action-sub { font-size: 11px; color: #94a3b8; }
 
-        /* Account Activation Box (Middle Banner like Daily Tasks) */
+        /* Account Activation Box */
         .activation-banner { 
             background: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #f97316 100%); 
             color: white; 
@@ -50,6 +50,25 @@
         .banner-title { font-size: 15px; font-weight: bold; display: flex; align-items: center; gap: 8px; }
         .banner-sub { font-size: 12px; opacity: 0.95; margin-bottom: 10px; line-height: 1.4; }
         .number-tag { background: rgba(0, 0, 0, 0.25); padding: 6px 10px; border-radius: 8px; font-weight: bold; font-size: 13px; display: inline-block; margin-bottom: 10px; }
+
+        /* Daily Tasks Card Styles */
+        .daily-task-card {
+            background: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #f97316 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 18px;
+            margin: 0 16px 12px 16px;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.2);
+        }
+        .task-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .task-info { display: flex; align-items: center; gap: 10px; }
+        .check-icon { width: 32px; height: 32px; background: rgba(255, 255, 255, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        .task-title { font-size: 16px; font-weight: bold; }
+        .task-sub { font-size: 11px; opacity: 0.85; }
+        .view-btn { background: rgba(255, 255, 255, 0.25); color: white; border: none; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; }
+        .progress-container { width: 100%; height: 8px; background: rgba(255, 255, 255, 0.3); border-radius: 10px; overflow: hidden; margin-bottom: 6px; }
+        .progress-bar { height: 100%; background: white; border-radius: 10px; }
+        .task-footer { display: flex; justify-content: space-between; font-size: 11px; opacity: 0.85; }
 
         /* Stats Cards */
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 16px 12px 16px; }
@@ -106,7 +125,7 @@
         <i class="fa-solid fa-ellipsis-vertical"></i>
     </div>
 
-    <!-- Generic Alert Modal -->
+    <!-- Alert Modal -->
     <div id="alertModal" class="modal-overlay" style="display: none;">
         <div class="modal-box">
             <div class="modal-title" id="alertTitle">বিজ্ঞপ্তি</div>
@@ -146,7 +165,7 @@
                 </div>
             </div>
 
-            <!-- Activation Banner in Middle (Styled like Daily Tasks Box) -->
+            <!-- 1. Account Activation Banner -->
             <div class="activation-banner">
                 <div class="banner-top">
                     <div class="banner-title"><i class="fa-solid fa-shield-halved"></i> অ্যাকাউন্ট অ্যাক্টিভ নয়</div>
@@ -160,6 +179,29 @@
                 </div>
                 <input type="text" id="homeTrxId" placeholder="TrxID প্রদান করুন" style="border: none; color: #0f172a; background: white;">
                 <button class="btn btn-white" onclick="submitHomeActivation()">Submit TrxID</button>
+            </div>
+
+            <!-- 2. Daily Tasks Box (যুক্ত করা হলো) -->
+            <div class="daily-task-card" onclick="switchTab('earn')">
+                <div class="task-header">
+                    <div class="task-info">
+                        <div class="check-icon">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <div>
+                            <div class="task-title">Daily Tasks</div>
+                            <div class="task-sub">2 tasks pending</div>
+                        </div>
+                    </div>
+                    <button class="view-btn">View <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 50%;"></div>
+                </div>
+                <div class="task-footer">
+                    <span>2 completed</span>
+                    <span>50%</span>
+                </div>
             </div>
 
             <div class="stats-grid">
@@ -301,14 +343,12 @@
     </div>
 
     <script>
-        // Balance starts at 0.00
         let balance = 0.00;
         let totalEarned = 0.00;
         let totalWithdrawn = 0.00;
         let totalReferrals = 0;
         let selectedMethod = 'bkash';
         
-        // Telegram WebApp Setup
         const tg = window.Telegram ? window.Telegram.WebApp : null;
         if(tg) { tg.expand(); }
 
@@ -319,7 +359,6 @@
             photo: (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.photo_url) ? tg.initDataUnsafe.user.photo_url : "https://via.placeholder.com/150"
         };
 
-        // Populate User Info
         document.getElementById('home-user-name').innerText = user.name;
         document.getElementById('prof-name').innerText = user.name;
         document.getElementById('prof-username').innerText = user.username;
@@ -465,5 +504,5 @@
             window.open('https://t.me/emone0011', '_blank');
         }
     </script>
-</body> 
+</body>
 </html>
