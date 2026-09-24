@@ -190,7 +190,7 @@
             <div class="section-box">
                 <div class="section-title"><i class="fa-solid fa-gift" style="color: #38bdf8;"></i> How to earn</div>
                 <p style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">
-                    ১. প্রতিদিন ভিডিও এড দেখে আয় করুন।<br>
+                    ১. প্রতিদিন ভিডিও এড দেখে আয় করুন。<br>
                     ২. বন্ধুদের রেফার করে ওয়ালেটে আয় বৃদ্ধি করুন।
                 </p>
             </div>
@@ -336,6 +336,40 @@
         document.getElementById('user-avatar').src = user.photo;
         document.getElementById('profile-img-large').src = user.photo;
         document.getElementById('ref-link-input').value = `https://t.me/HubBD_Bot?start=${user.id}`;
+
+        // ব্যাকএন্ড থেকে স্ট্যাটাস চেক করার নতুন ফাংশন
+        async function checkUserStatus() {
+            try {
+                const response = await fetch(`/api/check-status/${user.id}`);
+                const data = await response.json();
+
+                if (data.status === 'active') {
+                    isAccountActive = true;
+                    const globalWarning = document.getElementById('globalWarning');
+                    if (globalWarning) globalWarning.style.display = 'none';
+
+                    const activationBanner = document.getElementById('activationBanner');
+                    if (activationBanner) activationBanner.style.display = 'none';
+
+                    const popupModal = document.getElementById('popupModal');
+                    if (popupModal) popupModal.style.display = 'none';
+
+                    const badge = document.getElementById('prof-status-badge');
+                    if (badge) {
+                        badge.innerText = 'Verified Active';
+                        badge.style.background = '#22c55e';
+                    }
+                }
+            } catch (err) {
+                console.log("Status check error:", err);
+            }
+        }
+
+        // অ্যাপ লোড হওয়ার সাথে সাথে এবং প্রতি ৫ সেকেন্ড পর পর স্ট্যাটাস চেক করবে
+        window.onload = () => {
+            checkUserStatus();
+            setInterval(checkUserStatus, 5000);
+        };
 
         function sendTelegramGroupNotification(messageText) {
             const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
