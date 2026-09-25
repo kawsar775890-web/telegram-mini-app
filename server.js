@@ -245,7 +245,12 @@ async function sendToAdmin(request, extraLines) {
         `🆔 <b>User ID:</b> <code>${request.tgId}</code>\n` +
         (request.username ? `🔗 <b>Username:</b> @${esc(request.username)}\n` : '') +
         extraLines.body;
-    await bot.telegram.sendMessage(ADMIN_CHAT_ID, text, { parse_mode: 'HTML', ...keyboard });
+    try {
+        await bot.telegram.sendMessage(ADMIN_CHAT_ID, text, { parse_mode: 'HTML', ...keyboard });
+    } catch (e) {
+        // অ্যাডমিন গ্রুপে মেসেজ না গেলেও ইউজারের রিকোয়েস্ট সফল হিসেবেই থাকবে; শুধু লগে এরর দেখাবে
+        console.error('sendToAdmin ব্যর্থ (ADMIN_CHAT_ID/বট গ্রুপ মেম্বারশিপ চেক করুন):', e.message);
+    }
 }
 
 // ================== Express সার্ভার ==================
