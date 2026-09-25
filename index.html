@@ -348,9 +348,11 @@ function showToast(msg){
   t._h = setTimeout(()=> t.style.display='none', 3500);
 }
 
+const API_BASE = 'https://telegram-mini-app2-9dm9.onrender.com';
+
 async function api(path, body){
   try {
-    const r = await fetch(path, {
+    const r = await fetch(API_BASE + path, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ initData: tg ? tg.initData : '', ...body })
@@ -596,4 +598,4 @@ window.addEventListener('load', async () => {
 });
 </script>
 </body>
-</html>
+  </html>
