@@ -320,6 +320,16 @@
 
   <div class="toast" id="toast"></div>
 
+  <!-- সংযোগ/সার্ভার এরর -->
+  <div class="overlay" id="connError">
+    <div class="modal gate">
+      <div class="ic">⚠️</div>
+      <h2>সংযোগ সমস্যা</h2>
+      <p id="connErrorMsg">লোড করা যাচ্ছে না।</p>
+      <button class="btn grad" onclick="refresh()">আবার চেষ্টা করুন</button>
+    </div>
+  </div>
+
 <script>
 const tg = window.Telegram ? window.Telegram.WebApp : null;
 if (tg) { tg.ready(); tg.expand(); }
@@ -339,14 +349,18 @@ function showToast(msg){
 }
 
 async function api(path, body){
-  const r = await fetch(path, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ initData: tg ? tg.initData : '', ...body })
-  });
-  let data = {};
-  try { data = await r.json(); } catch(e){}
-  return { ok: r.ok, status: r.status, data };
+  try {
+    const r = await fetch(path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ initData: tg ? tg.initData : '', ...body })
+    });
+    let data = {};
+    try { data = await r.json(); } catch(e){}
+    return { ok: r.ok, status: r.status, data, network: false };
+  } catch (e) {
+    return { ok: false, status: 0, data: {}, network: true };
+  }
 }
 
 // ================= স্টেট রেন্ডার =================
@@ -554,9 +568,26 @@ async function submitWithdraw(){
 }
 
 // ================= লোড ও রিফ্রেশ =================
+let initFailCount = 0;
+
 async function refresh(){
-  const { ok, data } = await api('/api/init', {});
-  if (ok) render(data);
+  const { ok, status, data, network } = await api('/api/init', {});
+  if (ok){
+    initFailCount = 0;
+    document.getElementById('connError').classList.remove('show');
+    render(data);
+  } else {
+    initFailCount++;
+    const box = document.getElementById('connErrorMsg');
+    if (network){
+      box.innerText = 'সার্ভারের সাথে সংযোগ করা যাচ্ছে না। ইন্টারনেট চেক করুন।';
+    } else if (status === 403){
+      box.innerText = 'ভেরিফিকেশন ব্যর্থ হয়েছে (কোড: 403)। এই অ্যাপটি অবশ্যই টেলিগ্রামের ভেতর থেকে খুলতে হবে।';
+    } else {
+      box.innerText = `সার্ভার এরর (কোড: ${status || 'unknown'})। একটু পরে আবার চেষ্টা করুন।`;
+    }
+    document.getElementById('connError').classList.add('show');
+  }
 }
 
 window.addEventListener('load', async () => {
