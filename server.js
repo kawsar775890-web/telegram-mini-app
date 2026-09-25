@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const crypto = require('crypto');
 const mongoose = require('mongoose');
 const { Telegraf, Markup } = require('telegraf');
@@ -249,6 +250,7 @@ async function sendToAdmin(request, extraLines) {
 
 // ================== Express সার্ভার ==================
 const app = express();
+app.use(cors());
 app.use(express.json({ limit: '10kb' }));
 app.use(express.static('public'));
 
