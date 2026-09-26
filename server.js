@@ -53,7 +53,7 @@ const Request = mongoose.model('Request', new mongoose.Schema({
     name: String,
     username: String,
 
-    trx: { type: String, unique: true, sparse: true, index: true },             // activation
+    trx: String,             // activation
     method: String,          // withdraw: bKash/Nagad
     number: String,          // withdraw: পেমেন্ট নম্বর
     amount: Number,          // withdraw
@@ -411,6 +411,14 @@ app.post('/api/submit-task', async (req, res) => {
 (async () => {
     await mongoose.connect(MONGODB_URI);
     console.log('MongoDB connected');
+
+    // পুরনো/লেগে-থাকা telegramId_1 unique index ডিলিট করে দেয় (একবার চললেই যথেষ্ট, নিরাপদে skip করবে যদি না থাকে)
+    try {
+        await mongoose.connection.db.collection('users').dropIndex('telegramId_1');
+        console.log('পুরনো telegramId_1 index ডিলিট হয়েছে ✅');
+    } catch (e) {
+        console.log('telegramId_1 index পাওয়া যায়নি বা আগেই ডিলিট হয়ে গেছে (ঠিক আছে):', e.message);
+    }
 
     app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
 
