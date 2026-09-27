@@ -135,7 +135,7 @@ bot.start(async ctx => {
             );
         } catch (e) { console.log('start referral সেভ এরর:', e.message); }
     }
-    if (!WEBAPP_URL) return ctx.reply('স্বাগতম! Task Hub BD-তে আপনাকে স্বাগতম।');
+    if (!WEBAPP_URL) return ctx.reply('স্বাগতম! TaskPay BD-তে আপনাকে স্বাগতম।');
     return ctx.reply('স্বাগতম! অ্যাপ খুলতে নিচের বাটনে চাপুন 👇',
         Markup.inlineKeyboard([Markup.button.webApp('🚀 Open App', WEBAPP_URL)]));
 });
