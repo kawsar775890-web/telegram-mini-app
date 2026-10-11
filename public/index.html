@@ -8,8 +8,8 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 <style>
   :root{
-    --bg:#0b1220; --card:#141d31; --card2:#182238; --line:#26324a;
-    --text:#f4f6fb; --sub:#93a1bd; --accent1:#8b5cf6; --accent2:#ec4899; --accent3:#f97316;
+    --bg:#f4f6fb; --card:#ffffff; --card2:#f1f4fa; --line:#e3e8f1;
+    --text:#1e293b; --sub:#64748b; --accent1:#8b5cf6; --accent2:#ec4899; --accent3:#f97316;
     --green:#22c55e; --red:#ef4444; --blue:#38bdf8;
   }
   *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;}
@@ -37,16 +37,16 @@
           font-weight:800;font-size:14px;border:2px solid rgba(255,255,255,.6);}
 
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px 14px;}
-  .action{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:17px;
+  .action{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;
           display:flex;align-items:center;gap:10px;cursor:pointer;}
-  .action .ic{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;
-              font-size:16px;color:#fff;flex-shrink:0;}
+  .action .ic{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+              font-size:15px;color:#fff;flex-shrink:0;}
   .ic.purple{background:var(--accent1);} .ic.pink{background:var(--accent2);}
-  .action .t{font-size:14px;font-weight:700;} .action .s{font-size:12px;color:var(--sub);}
+  .action .t{font-size:13px;font-weight:700;} .action .s{font-size:11px;color:var(--sub);}
 
   .stat2{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px 14px;}
-  .stat2 .box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center;}
-  .stat2 .box .v{font-size:19px;font-weight:800;} .stat2 .box .l{font-size:11.5px;color:var(--sub);margin-top:3px;}
+  .stat2 .box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center;}
+  .stat2 .box .v{font-size:17px;font-weight:800;} .stat2 .box .l{font-size:10.5px;color:var(--sub);margin-top:2px;}
 
   .section{background:var(--card);margin:0 16px 14px;padding:16px;border-radius:18px;border:1px solid var(--line);}
   .section h3{font-size:14.5px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
@@ -116,7 +116,7 @@
   .nav-item i{font-size:17px;display:block;margin-bottom:3px;}
   .nav-item.active{color:var(--blue);font-weight:700;}
 
-  .overlay{position:fixed;inset:0;background:rgba(4,7,15,.88);display:none;align-items:center;justify-content:center;
+  .overlay{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;
            padding:20px;z-index:100;backdrop-filter:blur(2px);}
   .overlay.show{display:flex;}
   .modal{background:var(--card);border-radius:18px;padding:22px;width:100%;max-width:340px;text-align:center;}
@@ -137,12 +137,28 @@
   .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:96px;background:var(--card);
          border:1px solid var(--line);border-radius:12px;padding:10px 16px;font-size:12.5px;z-index:200;
          display:none;max-width:90%;text-align:center;}
+  .section,.action,.stat2 .box,.invite{box-shadow:0 2px 10px rgba(30,41,59,.06);}
+  .app-bar{box-shadow:0 1px 6px rgba(30,41,59,.06);}
+  .invite{background:var(--card);border:1px solid var(--line);border-radius:18px;margin:0 16px 14px;padding:16px;}
+  .inv-top{display:flex;gap:12px;align-items:center;}
+  .inv-ic{width:46px;height:46px;border-radius:14px;background:#fff4dc;color:#f59e0b;display:flex;align-items:center;
+          justify-content:center;font-size:20px;flex-shrink:0;}
+  .inv-k{font-size:12px;font-weight:700;color:var(--sub);}
+  .inv-g{font-size:14px;font-weight:800;color:#059669;margin-top:2px;}
+  .inv-d{font-size:13px;font-weight:700;margin-top:2px;}
+  .ad-count{font-size:34px;font-weight:800;margin:10px 0 6px;} .ad-count small{font-size:16px;color:var(--sub);}
+  .ad-bar{height:8px;background:var(--card2);border-radius:99px;overflow:hidden;margin-bottom:8px;}
+  .ad-bar div{height:100%;width:0;background:linear-gradient(90deg,var(--accent1),var(--accent2));transition:width .3s;}
+  .ad-sub{font-size:12px;color:var(--sub);margin-bottom:14px;}
+  .ad-timer{width:68px;height:68px;border-radius:50%;border:4px solid var(--accent1);margin:12px auto 0;
+            align-items:center;justify-content:center;font-size:28px;font-weight:800;color:var(--accent1);}
+  .btn.go{background:var(--green);}
 </style>
 </head>
 <body>
 
   <div class="app-bar">
-    <div class="brand"><i class="fa-solid fa-bolt"></i>TaskPay BD</div>
+    <div class="brand"><i class="fa-solid fa-bolt"></i> TaskPay BD</div>
     <div id="hdrStatus"></div>
   </div>
 
@@ -165,55 +181,48 @@
             <div class="ic purple"><i class="fa-solid fa-wallet"></i></div>
             <div><div class="t">Withdraw</div><div class="s">Cash out</div></div>
           </div>
-          <div class="action" onclick="switchTab('earn')">
+          <div class="action" onclick="document.getElementById('inviteCard').scrollIntoView({behavior:'smooth'})">
             <div class="ic pink"><i class="fa-solid fa-user-group"></i></div>
-            <div><div class="t">Task</div><div class="s">৳<span id="refReward">20</span> / activation</div></div>
+            <div><div class="t">Invite</div><div class="s">৳<span id="refReward">80</span> / active invite</div></div>
           </div>
         </div>
 
         <div class="stat2">
-          <div class="box"><div class="v" id="homeReferrals">0</div><div class="l">Total Referrals</div></div>
-          <div class="box"><div class="v" id="homeTasks">0</div><div class="l">Tasks Available</div></div>
+          <div class="box"><div class="v" id="homeReferrals">0</div><div class="l">Total Invitation</div></div>
+          <div class="box"><div class="v"><span id="homeTasks">0</span>/<span class="adlim">100</span></div><div class="l">Today's Ads</div></div>
+        </div>
+
+        <div class="invite" id="inviteCard">
+          <div class="inv-top">
+            <div class="inv-ic"><i class="fa-solid fa-gift"></i></div>
+            <div>
+              <div class="inv-k">Invite a friend</div>
+              <div class="inv-g">প্রতি এক্টিভ ইনভাইট <span class="inv">80</span> টাকা,</div>
+              <div class="inv-d">একটি ইনভাইট একটি পেমেন্ট।</div>
+            </div>
+          </div>
+          <div class="inv-k" style="margin-top:14px;">Your invite link</div>
+          <div class="link-row">
+            <input type="text" id="referLink" readonly>
+            <button class="btn grad small" onclick="copyReferLink()"><i class="fa-regular fa-copy"></i> COPY</button>
+          </div>
+          <button class="btn grad" style="margin-top:12px;" onclick="shareInvite()"><i class="fa-solid fa-user-plus"></i> INVITE NOW</button>
         </div>
       </div>
 
       <!-- ================= EARN ================= -->
       <div id="earn" class="tab">
-        <div class="section">
-          <h3><i class="fa-solid fa-link" style="color:var(--blue)"></i> Your Refer Link</h3>
-          <p>বন্ধুকে রেফার করুন, তিনি তার একাউন্ট এক্টিভ করলেই আপনার জন্য একটি নতুন টাস্ক আনলক হবে।</p>
-          <div class="link-row">
-            <input type="text" id="referLink" readonly>
-            <button class="btn grad small" onclick="copyReferLink()">Copy</button>
-          </div>
-        </div>
-
-        <div class="section">
-          <h3><i class="fa-brands fa-youtube" style="color:#ff3b3b"></i> YouTube টাস্ক</h3>
-          <p>রেফার করা কেউ অ্যাক্টিভ হলেই এখানে একটি টাস্ক আনলক হয়। ভিডিও দেখুন, লাইক ও কমেন্ট করুন,কমেন্টে যায় লিখবেন তা হুবুহু নিচে লিখে দিন — অ্যাডমিন অনুমোদন করলেই ৳<span class="rf">20</span> যোগ হবে।</p>
-
-          <div class="task-card" id="taskCard">
-            <div>
-              <div class="tt">ভিডিও দেখুন লাইক ও কমেন্ট করুন</div>
-              <div class="ts" id="taskSub">এখনো কোনো টাস্ক আনলক হয়নি</div>
-            </div>
-            <span class="pill grey" id="taskPill">লকড</span>
-          </div>
-
-          <div class="taskflow" id="taskFlow" style="display:none;">
-            <ol>
-              <li>নিচের বাটনে চেপে ভিডিওটি খুলুন</li>
-              <li>ভিডিও সম্পূর্ণ দেখুন  লাইক দিন ও কমেন্ট করুন</li>
-              <li>ভিডিও কমেন্টে যা লিখবেন সেই একই  লেখা নিচে হুবুহু লিখে দিন</li>
-            </ol>
-            <a id="ytBtn" class="btn ghost" target="_blank" style="display:block;text-decoration:none;margin-bottom:4px;">
-              <i class="fa-brands fa-youtube"></i> ভিডিও দেখুন
-            </a>
-            <textarea id="proofInput" placeholder="ভিডিওতে যেই কমেন্ট করেছেন সেই কমেন্ট এখানেও লিখুন"></textarea>
-            <button class="btn grad" id="taskSubmitBtn" onclick="submitTask()">Submit Proof</button>
-          </div>
+        <div class="section" style="text-align:center;">
+          <h3 style="justify-content:center;"><i class="fa-solid fa-circle-play" style="color:var(--accent3)"></i> বিজ্ঞাপন দেখে আয় করুন</h3>
+          <p>প্রতিটি বিজ্ঞাপন দেখলে ৳<span id="adRw">0.10</span> পাবেন। দিনে সর্বোচ্চ <span class="adlim">100</span> টি বিজ্ঞাপন। বাটনে চাপলে বিজ্ঞাপন খুলবে, <span class="adsec">15</span> সেকেন্ড দেখে অ্যাপে ফিরে ✕ চাপলে টাকা যোগ হবে।</p>
+          <div class="ad-timer" id="adTimer" style="display:none;">15</div>
+          <div class="ad-count"><span id="adDone">0</span><small>/<span class="adlim">100</span></small></div>
+          <div class="ad-bar"><div id="adBar"></div></div>
+          <div class="ad-sub">আজকের আয়: ৳<span id="adEarnedToday">0</span></div>
+          <button class="btn grad" id="adBtn" onclick="watchAd()"><i class="fa-solid fa-play"></i> বিজ্ঞাপন দেখুন</button>
         </div>
       </div>
+
 
       <!-- ================= WITHDRAW ================= -->
       <div id="withdraw" class="tab">
@@ -332,7 +341,7 @@
 
 <script>
 const tg = window.Telegram ? window.Telegram.WebApp : null;
-if (tg) { tg.ready(); tg.expand(); }
+if (tg) { tg.ready(); tg.expand(); try { tg.setHeaderColor('#ffffff'); tg.setBackgroundColor('#f4f6fb'); } catch(e){} }
 
 let S = null;             // সর্বশেষ সার্ভার স্টেট
 let blockTimer = null;
@@ -348,11 +357,9 @@ function showToast(msg){
   t._h = setTimeout(()=> t.style.display='none', 3500);
 }
 
-const API_BASE = 'https://telegram-mini-app2-9dm9.onrender.com';
-
 async function api(path, body){
   try {
-    const r = await fetch(API_BASE + path, {
+    const r = await fetch(path, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ initData: tg ? tg.initData : '', ...body })
@@ -374,10 +381,12 @@ function render(state){
   document.getElementById('homeBalance').innerText = fmt(state.balance);
   document.getElementById('homeEarned').innerText = fmt(state.totalEarned);
   document.getElementById('homeReferrals').innerText = fmt(state.totalReferrals);
-  document.getElementById('homeTasks').innerText = fmt(state.videoTasksAvailable);
-  document.querySelectorAll('.rf').forEach(el => el.innerText = state.referralReward);
+  document.getElementById('homeTasks').innerText = fmt(state.adsToday);
+  document.querySelectorAll('.inv').forEach(el => el.innerText = state.inviteReward);
+  document.querySelectorAll('.adlim').forEach(el => el.innerText = state.adDailyLimit);
+  document.querySelectorAll('.adsec').forEach(el => el.innerText = state.adWatchSec);
   document.querySelectorAll('.fee').forEach(el => el.innerText = state.activationFee);
-  document.getElementById('refReward').innerText = state.referralReward;
+  document.getElementById('refReward').innerText = state.inviteReward;
 
   // Refer link
   const link = state.botUsername
@@ -385,15 +394,11 @@ function render(state){
     : `(বট ইউজারনেম সেট করা নেই)`;
   document.getElementById('referLink').value = link;
 
-  // Earn: task card
-  const has = state.videoTasksAvailable > 0;
-  document.getElementById('taskPill').className = 'pill ' + (has ? 'gold' : 'grey');
-  document.getElementById('taskPill').innerText = has ? 'আনলকড' : 'লকড';
-  document.getElementById('taskSub').innerText = has
-    ? 'একটি নতুন টাস্ক আপনার জন্য অপেক্ষা করছে'
-    : 'কাউকে রেফার করুন, তারা অ্যাক্টিভ হলেই টাস্ক আনলক হবে';
-  document.getElementById('taskFlow').style.display = has ? 'block' : 'none';
-  document.getElementById('ytBtn').href = state.youtubeLink;
+  // Earn: বিজ্ঞাপন
+  document.getElementById('adRw').innerText = state.adReward;
+  document.getElementById('adDone').innerText = state.adsToday;
+  document.getElementById('adBar').style.width = Math.min(100, state.adsToday / state.adDailyLimit * 100) + '%';
+  document.getElementById('adEarnedToday').innerText = (state.adsToday * state.adReward).toFixed(2);
 
   // Withdraw
   document.getElementById('wdBalance').innerText = fmt(state.balance);
@@ -496,6 +501,73 @@ function copyReferLink(){
   navigator.clipboard ? navigator.clipboard.writeText(input.value).then(()=>showToast('লিংক কপি হয়েছে')) : document.execCommand('copy');
 }
 
+function shareInvite(){
+  const link = document.getElementById('referLink').value;
+  const url = 'https://t.me/share/url?url=' + encodeURIComponent(link) + '&text=' + encodeURIComponent('TaskPay BD-তে জয়েন করুন ও আয় করুন!');
+  if (tg && tg.openTelegramLink) tg.openTelegramLink(url); else window.open(url, '_blank');
+}
+
+// ================= বিজ্ঞাপন দেখে আয় =================
+let adBusy = false, adInterval = null;
+const AD_BTN_HTML = '<i class="fa-solid fa-play"></i> বিজ্ঞাপন দেখুন';
+
+function resetAdBtn(){
+  clearInterval(adInterval);
+  const btn = document.getElementById('adBtn');
+  btn.disabled = false; btn.className = 'btn grad'; btn.innerHTML = AD_BTN_HTML; btn.onclick = watchAd;
+  document.getElementById('adTimer').style.display = 'none';
+  adBusy = false;
+}
+
+async function watchAd(){
+  if (adBusy || !S) return;
+  if (S.adsToday >= S.adDailyLimit){ showToast('আজকের বিজ্ঞাপনের লিমিট শেষ, কাল আবার আসুন'); return; }
+  if (!S.adLink){ showToast('বিজ্ঞাপন এখনো চালু করা হয়নি'); return; }
+  adBusy = true;
+  const btn = document.getElementById('adBtn');
+  const timerEl = document.getElementById('adTimer');
+  btn.disabled = true;
+
+  // লিংক ট্যাপের সাথে সাথেই খুলতে হবে, নইলে ব্রাউজার পপআপ ব্লক করতে পারে
+  if (tg && tg.openLink) tg.openLink(S.adLink); else window.open(S.adLink, '_blank');
+
+  const { ok, data } = await api('/api/ad-start', {});
+  if (!ok){
+    resetAdBtn();
+    showToast(data.error === 'daily_limit' ? 'আজকের বিজ্ঞাপনের লিমিট শেষ' : 'শুরু করা যায়নি, আবার চেষ্টা করুন');
+    return;
+  }
+
+  const endAt = Date.now() + (data.watchSec || S.adWatchSec) * 1000;
+  timerEl.style.display = 'flex';
+  const tick = () => {
+    const left = Math.ceil((endAt - Date.now()) / 1000);
+    if (left > 0){
+      timerEl.innerText = left;
+      btn.innerHTML = 'অপেক্ষা করুন...';
+      return;
+    }
+    clearInterval(adInterval);
+    timerEl.style.display = 'none';
+    btn.disabled = false; btn.className = 'btn go';
+    btn.innerHTML = '<i class="fa-solid fa-xmark"></i> বন্ধ করে ৳' + S.adReward + ' নিন';
+    btn.onclick = claimAd;
+  };
+  tick();
+  adInterval = setInterval(tick, 250);
+}
+
+async function claimAd(){
+  const btn = document.getElementById('adBtn');
+  btn.disabled = true;
+  const { ok, data } = await api('/api/ad-reward', {});
+  resetAdBtn();
+  if (ok){ showToast('৳' + S.adReward + ' যোগ হয়েছে!'); await refresh(); }
+  else if (data.error === 'daily_limit') showToast('আজকের বিজ্ঞাপনের লিমিট শেষ');
+  else if (data.error === 'not_watched') showToast('সময় পূর্ণ হয়নি, আবার বিজ্ঞাপন দেখুন');
+  else showToast('রিওয়ার্ড দেওয়া যায়নি, আবার চেষ্টা করুন');
+}
+
 let selectedMethod = null;
 function selectMethod(m){
   selectedMethod = m;
@@ -526,23 +598,6 @@ async function submitActivation(){
   }
 }
 
-async function submitTask(){
-  const proof = document.getElementById('proofInput').value.trim();
-  const btn = document.getElementById('taskSubmitBtn');
-  if (proof.length < 3){ showToast('স্ক্রিনশট লিংক বা প্রমাণ লিখুন'); return; }
-
-  btn.disabled = true;
-  const { ok, data } = await api('/api/submit-task', { proof });
-  btn.disabled = false;
-
-  if (ok){
-    showToast(`জমা হয়েছে! অনুমোদনের পর ৳${S ? S.referralReward : 20} যোগ হবে।`);
-    document.getElementById('proofInput').value = '';
-    await refresh();
-  } else {
-    showToast(data.error === 'no_task' ? 'এই মুহূর্তে কোনো টাস্ক আনলকড নেই' : 'জমা দেওয়া যায়নি, আবার চেষ্টা করুন');
-  }
-}
 
 async function submitWithdraw(){
   const number = document.getElementById('wdNumber').value.trim();
