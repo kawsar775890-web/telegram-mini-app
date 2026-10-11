@@ -11,11 +11,14 @@ const MONGODB_URI = process.env.MONGODB_URI;
 const WEBAPP_URL = process.env.WEBAPP_URL || '';                 // যেমন https://your-app.onrender.com
 const BOT_USERNAME = process.env.BOT_USERNAME || '';              // @ ছাড়া, রেফার লিংক বানাতে লাগবে
 const CLIENT_USERNAME = process.env.CLIENT_USERNAME || 'emone0011'; // Help & Support বাটনের জন্য (@ ছাড়া)
-const YOUTUBE_TASK_LINK = process.env.YOUTUBE_TASK_LINK
-    || 'https://youtube.com/shorts/K_X-zzBPjIM?si=IcXWtq22ksxzxGNR';
-const ACTIVATION_FEE = Number(process.env.ACTIVATION_FEE || 30);
-const REFERRAL_REWARD = Number(process.env.REFERRAL_REWARD || 20);
+const ACTIVATION_FEE = Number(process.env.ACTIVATION_FEE || 100);
+const INVITE_REWARD = Number(process.env.INVITE_REWARD || 80);      // প্রতি এক্টিভ ইনভাইটে
 const MIN_WITHDRAW = Number(process.env.MIN_WITHDRAW || 20);
+const AD_REWARD = Number(process.env.AD_REWARD || 0.10);            // প্রতি বিজ্ঞাপনে
+const AD_DAILY_LIMIT = Number(process.env.AD_DAILY_LIMIT || 100);   // দিনে সর্বোচ্চ বিজ্ঞাপন
+const AD_LINK = process.env.AD_LINK
+    || 'https://www.profitableratecpmnetwork.com/cf2ta9zk?key=3067408f6360c2078b202447a7ad731e'; // Adsterra ডাইরেক্ট লিংক
+const AD_WATCH_SEC = Number(process.env.AD_WATCH_SEC || 15);         // প্রতিটি বিজ্ঞাপনের কাউন্টডাউন (সেকেন্ড)
 const PAY_NUMBER = process.env.PAY_NUMBER || '01602725947';
 const ADMIN_IDS = (process.env.ADMIN_IDS || '')                  // ঐচ্ছিক: "111,222"
     .split(',').map(s => s.trim()).filter(Boolean);
@@ -41,7 +44,10 @@ const User = mongoose.model('User', new mongoose.Schema({
     referredBy: { type: String, default: null },
     totalReferrals: { type: Number, default: 0 },
 
-    videoTasksAvailable: { type: Number, default: 0 }, // কতগুলো YouTube টাস্ক এখন আনলকড ও জমা দেওয়া যাবে
+    adsToday: { type: Number, default: 0 },   // আজ কতগুলো বিজ্ঞাপন দেখেছে
+    adsDate: { type: String, default: '' },   // কোন তারিখের (বাংলাদেশ সময়) adsToday
+    lastAdAt: { type: Date, default: null },
+    adStartedAt: { type: Date, default: null }, // বিজ্ঞাপন দেখা শুরুর সময় (সার্ভারে রেকর্ড)
     justActivated: { type: Boolean, default: false },   // এক্টিভেশনের পর একবার "অভিনন্দন" দেখানোর ফ্ল্যাগ
 
     joinedAt: { type: Date, default: Date.now }
@@ -64,6 +70,8 @@ const Request = mongoose.model('Request', new mongoose.Schema({
 
 // ================== হেল্পার ==================
 const esc = s => String(s == null ? '' : s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+
+const dhakaDay = () => new Date(Date.now() + 6 * 3600 * 1000).toISOString().slice(0, 10); // বাংলাদেশ সময়ের তারিখ
 
 // Telegram Mini App-এর initData যাচাই (নকল আইডি ঠেকায়)
 function verifyInitData(initData) {
@@ -99,17 +107,20 @@ function userPublicState(u) {
         username: u.username,
         tgId: u.tgId,
         joinedAt: u.joinedAt,
-        balance: u.balance,
-        totalEarned: u.totalEarned,
+        balance: Math.round(u.balance * 100) / 100,
+        totalEarned: Math.round(u.totalEarned * 100) / 100,
         totalWithdrawn: u.totalWithdrawn,
         totalReferrals: u.totalReferrals,
-        videoTasksAvailable: u.videoTasksAvailable,
+        adsToday: u.adsDate === dhakaDay() ? u.adsToday : 0,
+        adReward: AD_REWARD,
+        adDailyLimit: AD_DAILY_LIMIT,
+        adLink: AD_LINK,
+        adWatchSec: AD_WATCH_SEC,
         justActivated: u.justActivated,
         activationFee: ACTIVATION_FEE,
-        referralReward: REFERRAL_REWARD,
+        inviteReward: INVITE_REWARD,
         minWithdraw: MIN_WITHDRAW,
         payNumber: PAY_NUMBER,
-        youtubeLink: YOUTUBE_TASK_LINK,
         clientUsername: CLIENT_USERNAME,
         botUsername: BOT_USERNAME
     };
@@ -149,9 +160,10 @@ bot.on('callback_query', async ctx => {
     if (!m) return ctx.answerCbQuery();
     const [, action, reqId] = m;
 
-    const request = await Request.findById(reqId);
-    if (!request) return ctx.answerCbQuery('রিকোয়েস্ট খুঁজে পাওয়া যায়নি।');
-    if (request.status !== 'pending') return ctx.answerCbQuery('এটা আগেই প্রসেস হয়ে গেছে।');
+    // একই রিকোয়েস্ট দুইবার প্রসেস ঠেকাতে atomic ভাবে pending থেকে স্ট্যাটাস বদলানো
+    const newStatus = action === 'approve' ? 'approved' : action === 'reject' ? 'rejected' : 'blocked';
+    const request = await Request.findOneAndUpdate({ _id: reqId, status: 'pending' }, { status: newStatus }, { new: true });
+    if (!request) return ctx.answerCbQuery('এটা আগেই প্রসেস হয়ে গেছে বা খুঁজে পাওয়া যায়নি।');
 
     const user = await User.findOne({ tgId: request.tgId });
     if (!user) return ctx.answerCbQuery('ইউজার খুঁজে পাওয়া যায়নি।');
@@ -171,13 +183,8 @@ bot.on('callback_query', async ctx => {
         if (request.type === 'activation') {
             await notify(user.tgId, '❌ আপনার অ্যাক্টিভেশন অনুরোধ প্রত্যাখ্যান করা হয়েছে। সঠিক তথ্য দিয়ে আবার চেষ্টা করুন।');
         } else if (request.type === 'withdraw') {
-            user.balance += request.amount; // রিজার্ভ করা ব্যালেন্স ফেরত
-            await user.save();
+            await User.updateOne({ tgId: user.tgId }, { $inc: { balance: request.amount } }); // রিজার্ভ করা ব্যালেন্স ফেরত
             await notify(user.tgId, `❌ আপনার ৳${request.amount} উত্তোলনের অনুরোধ প্রত্যাখ্যান করা হয়েছে, ব্যালেন্স ফেরত দেওয়া হয়েছে।`);
-        } else if (request.type === 'task') {
-            user.videoTasksAvailable += 1; // আবার চেষ্টা করার সুযোগ ফেরত
-            await user.save();
-            await notify(user.tgId, '❌ আপনার জমা দেওয়া কাজ গ্রহনযোগ্য নয়।');
         }
         resultLine = `🔴 Rejected — User ID: ${request.tgId}`;
     } else if (action === 'approve') {
@@ -190,25 +197,19 @@ bot.on('callback_query', async ctx => {
             await user.save();
             await notify(user.tgId, '🎉 অভিনন্দন! আপনার একাউন্টটি সফলভাবে অ্যাক্টিভ করা হয়েছে। এখন আপনি সম্পূর্ণ অ্যাপ ব্যবহার করতে পারবেন।');
 
-            // যে রেফার করেছিল তাকে YouTube টাস্ক আনলক করে দেওয়া
-            if (user.referredBy) {
-                const referrer = await User.findOne({ tgId: user.referredBy });
-                if (referrer) {
-                    referrer.totalReferrals += 1;
-                    referrer.videoTasksAvailable += 1;
-                    await referrer.save();
-                    await notify(referrer.tgId, '🎁 আপনার রেফার করা একজন ইউজার অ্যাক্টিভ হয়েছে! এখন Earn ট্যাবে গিয়ে ভিডিও টাস্ক সম্পন্ন করে ৳' + REFERRAL_REWARD + ' নিন।');
+            // যে ইনভাইট করেছিল তার ব্যালেন্সে সরাসরি টাকা যোগ (কোনো টাস্ক নেই)
+            if (user.referredBy && user.referredBy !== user.tgId) {
+                const inviter = await User.findOneAndUpdate(
+                    { tgId: user.referredBy, status: { $ne: 'blocked' } },
+                    { $inc: { totalReferrals: 1, balance: INVITE_REWARD, totalEarned: INVITE_REWARD } }
+                );
+                if (inviter) {
+                    await notify(inviter.tgId, `🎁 আপনার ইনভাইট করা একজন ইউজার অ্যাক্টিভ হয়েছে! আপনি ${INVITE_REWARD} টাকা পেয়েছেন।`);
                 }
             }
         } else if (request.type === 'withdraw') {
-            user.totalWithdrawn += request.amount;
-            await user.save();
+            await User.updateOne({ tgId: user.tgId }, { $inc: { totalWithdrawn: request.amount } });
             await notify(user.tgId, `✅ আপনার ৳${request.amount} উত্তোলনের অনুরোধ সফল হয়েছে। কিছু সময়ের মধ্যে পেমেন্ট পেয়ে যাবেন, ধন্যবাদ।`);
-        } else if (request.type === 'task') {
-            user.balance += REFERRAL_REWARD;
-            user.totalEarned += REFERRAL_REWARD;
-            await user.save();
-            await notify(user.tgId, `🎉 আপনার কাজ সম্পন্ন হয়েছে, আপনি পেয়েছেন ৳${REFERRAL_REWARD}!`);
         }
         resultLine = `✅ Approved — User ID: ${request.tgId}`;
     }
@@ -349,7 +350,7 @@ app.post('/api/submit-withdraw', async (req, res) => {
 
     if (!['bKash', 'Nagad'].includes(method)) return res.status(400).json({ ok: false, error: 'invalid_method' });
     if (!/^01\d{9}$/.test(number)) return res.status(400).json({ ok: false, error: 'invalid_number' });
-    if (!Number.isFinite(amount) || amount < MIN_WITHDRAW) return res.status(400).json({ ok: false, error: 'min_amount', min: MIN_WITHDRAW });
+    if (!Number.isInteger(amount) || amount < MIN_WITHDRAW) return res.status(400).json({ ok: false, error: 'min_amount', min: MIN_WITHDRAW });
     if (tooFast('wd:' + id)) return res.status(429).json({ ok: false, error: 'too_fast' });
 
     try {
@@ -358,8 +359,12 @@ app.post('/api/submit-withdraw', async (req, res) => {
         if (user.status !== 'active') return res.status(403).json({ ok: false, error: 'not_active' });
         if (user.balance < amount) return res.status(400).json({ ok: false, error: 'insufficient_balance' });
 
-        user.balance -= amount; // রিকোয়েস্ট পেন্ডিং থাকা অবস্থায় ব্যালেন্স রিজার্ভ করা, রিজেক্ট হলে ফেরত
-        await user.save();
+        // ব্যালেন্স চেক ও কাটা একসাথে (atomic), যাতে দ্রুত দুইবার চাপলে বেশি তোলা না যায়
+        const reserved = await User.findOneAndUpdate(
+            { tgId: id, status: 'active', balance: { $gte: amount } },
+            { $inc: { balance: -amount } }
+        );
+        if (!reserved) return res.status(400).json({ ok: false, error: 'insufficient_balance' });
 
         const request = await Request.create({
             type: 'withdraw', tgId: id, name: user.name, username: user.username, method, number, amount
@@ -375,34 +380,75 @@ app.post('/api/submit-withdraw', async (req, res) => {
     }
 });
 
-// ---------- YouTube টাস্কের প্রমাণ জমা ----------
-app.post('/api/submit-task', async (req, res) => {
+// ---------- বিজ্ঞাপন: শুরু (১৫ সেকেন্ডের টাইমার সার্ভারেও গোনা হয়) ----------
+app.post('/api/ad-start', async (req, res) => {
     const verified = verifyInitData(req.body.initData);
     if (!verified) return res.status(403).json({ ok: false, error: 'invalid_user' });
     const id = String(verified.user.id);
-    const proof = String(req.body.proof || '').trim();
-    if (proof.length < 3 || proof.length > 300) return res.status(400).json({ ok: false, error: 'invalid_proof' });
-    if (tooFast('task:' + id)) return res.status(429).json({ ok: false, error: 'too_fast' });
-
     try {
         const user = await User.findOne({ tgId: id });
         if (!user) return res.status(404).json({ ok: false, error: 'not_found' });
         if (user.status !== 'active') return res.status(403).json({ ok: false, error: 'not_active' });
-        if (user.videoTasksAvailable < 1) return res.status(400).json({ ok: false, error: 'no_task' });
-
-        user.videoTasksAvailable -= 1;
-        await user.save();
-
-        const request = await Request.create({
-            type: 'task', tgId: id, name: user.name, username: user.username, proof
-        });
-        await sendToAdmin(request, {
-            title: 'New Task Submission!',
-            body: `🎬 <b>Task:</b> YouTube Watch\n📝 <b>Proof:</b> ${esc(proof)}\n💵 <b>Reward:</b> ৳${REFERRAL_REWARD}`
-        });
-        res.json({ ok: true });
+        if (user.adsDate === dhakaDay() && user.adsToday >= AD_DAILY_LIMIT) {
+            return res.status(429).json({ ok: false, error: 'daily_limit' });
+        }
+        await User.updateOne({ tgId: id }, { $set: { adStartedAt: new Date() } });
+        res.json({ ok: true, watchSec: AD_WATCH_SEC });
     } catch (e) {
-        console.error('submit-task error:', e);
+        console.error('ad-start error:', e);
+        res.status(500).json({ ok: false, error: 'server_error' });
+    }
+});
+
+// ---------- বিজ্ঞাপন: রিওয়ার্ড (দিনে AD_DAILY_LIMIT টি, প্রতিটি AD_REWARD টাকা) ----------
+const addRound = (field, v) => ({ $round: [{ $add: [{ $ifNull: ['$' + field, 0] }, v] }, 2] });
+app.post('/api/ad-reward', async (req, res) => {
+    const verified = verifyInitData(req.body.initData);
+    if (!verified) return res.status(403).json({ ok: false, error: 'invalid_user' });
+    const id = String(verified.user.id);
+
+    try {
+        const today = dhakaDay();
+        const now = Date.now();
+        // শুরুর পর কমপক্ষে AD_WATCH_SEC সেকেন্ড (এবং সর্বোচ্চ ১০ মিনিট) পার হয়েছে কিনা
+        const watched = { adStartedAt: { $lte: new Date(now - AD_WATCH_SEC * 1000), $gte: new Date(now - 10 * 60 * 1000) } };
+        const opts = { new: true, updatePipeline: true };
+
+        // আজকের তারিখের কাউন্টার চলছে
+        let u = await User.findOneAndUpdate(
+            { tgId: id, status: 'active', adsDate: today, adsToday: { $lt: AD_DAILY_LIMIT }, ...watched },
+            [{ $set: {
+                balance: addRound('balance', AD_REWARD),
+                totalEarned: addRound('totalEarned', AD_REWARD),
+                adsToday: { $add: ['$adsToday', 1] },
+                lastAdAt: '$$NOW',
+                adStartedAt: null
+            } }], opts);
+
+        // নতুন দিন শুরু: কাউন্টার রিসেট
+        if (!u) {
+            u = await User.findOneAndUpdate(
+                { tgId: id, status: 'active', adsDate: { $ne: today }, ...watched },
+                [{ $set: {
+                    balance: addRound('balance', AD_REWARD),
+                    totalEarned: addRound('totalEarned', AD_REWARD),
+                    adsToday: { $literal: 1 },
+                    adsDate: { $literal: today },
+                    lastAdAt: '$$NOW',
+                    adStartedAt: null
+                } }], opts);
+        }
+
+        if (!u) {
+            const cur = await User.findOne({ tgId: id }).lean();
+            if (!cur) return res.status(404).json({ ok: false, error: 'not_found' });
+            if (cur.status !== 'active') return res.status(403).json({ ok: false, error: 'not_active' });
+            if (cur.adsDate === today && cur.adsToday >= AD_DAILY_LIMIT) return res.status(429).json({ ok: false, error: 'daily_limit' });
+            return res.status(429).json({ ok: false, error: 'not_watched' });
+        }
+        res.json({ ok: true, adsToday: u.adsToday, balance: Math.round(u.balance * 100) / 100 });
+    } catch (e) {
+        console.error('ad-reward error:', e);
         res.status(500).json({ ok: false, error: 'server_error' });
     }
 });
@@ -411,14 +457,6 @@ app.post('/api/submit-task', async (req, res) => {
 (async () => {
     await mongoose.connect(MONGODB_URI);
     console.log('MongoDB connected');
-
-    // পুরনো/লেগে-থাকা telegramId_1 unique index ডিলিট করে দেয় (একবার চললেই যথেষ্ট, নিরাপদে skip করবে যদি না থাকে)
-    try {
-        await mongoose.connection.db.collection('users').dropIndex('telegramId_1');
-        console.log('পুরনো telegramId_1 index ডিলিট হয়েছে ✅');
-    } catch (e) {
-        console.log('telegramId_1 index পাওয়া যায়নি বা আগেই ডিলিট হয়ে গেছে (ঠিক আছে):', e.message);
-    }
 
     app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
 
