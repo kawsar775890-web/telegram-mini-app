@@ -153,6 +153,20 @@
   .ad-timer{width:68px;height:68px;border-radius:50%;border:4px solid var(--accent1);margin:12px auto 0;
             align-items:center;justify-content:center;font-size:28px;font-weight:800;color:var(--accent1);}
   .btn.go{background:var(--green);}
+  .adscreen{position:fixed;inset:0;background:#f1f6f3;z-index:300;display:none;flex-direction:column;
+            padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0);}
+  .adscreen.show{display:flex;}
+  .ad-top{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;}
+  .ad-chip{background:#fff;border:1px solid var(--line);border-radius:99px;padding:10px 16px;font-size:13px;
+           font-weight:700;color:#065f46;display:flex;align-items:center;gap:8px;}
+  .ad-chip .dot{width:9px;height:9px;border-radius:50%;background:var(--green);}
+  .ad-count-circle{width:46px;height:46px;border-radius:50%;background:#fff;border:1.5px solid var(--line);
+                   display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;color:#059669;}
+  .ad-count-circle.done{cursor:pointer;background:#ecfdf5;border-color:#059669;font-size:19px;}
+  .ad-body{flex:1;position:relative;margin:0 12px;border-radius:20px;overflow:hidden;background:#fff;border:1px solid var(--line);}
+  .ad-body iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:transparent;}
+  .ad-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:13px;}
+  .ad-foot{text-align:center;font-size:11.5px;color:var(--sub);padding:12px;text-decoration:underline;cursor:pointer;}
 </style>
 </head>
 <body>
@@ -214,8 +228,7 @@
       <div id="earn" class="tab">
         <div class="section" style="text-align:center;">
           <h3 style="justify-content:center;"><i class="fa-solid fa-circle-play" style="color:var(--accent3)"></i> বিজ্ঞাপন দেখে আয় করুন</h3>
-          <p>প্রতিটি বিজ্ঞাপন দেখলে ৳<span id="adRw">0.10</span> পাবেন। দিনে সর্বোচ্চ <span class="adlim">100</span> টি বিজ্ঞাপন। বাটনে চাপলে বিজ্ঞাপন খুলবে, <span class="adsec">15</span> সেকেন্ড দেখে অ্যাপে ফিরে ✕ চাপলে টাকা যোগ হবে।</p>
-          <div class="ad-timer" id="adTimer" style="display:none;">15</div>
+          <p>প্রতিটি বিজ্ঞাপন দেখলে ৳<span id="adRw">0.10</span> পাবেন। দিনে সর্বোচ্চ <span class="adlim">100</span> টি বিজ্ঞাপন। বিজ্ঞাপন দেখুন বাটনে চাপুন, <span class="adsec">15</span> সেকেন্ড পর ✕ চাপলে টাকা যোগ হবে।</p>
           <div class="ad-count"><span id="adDone">0</span><small>/<span class="adlim">100</span></small></div>
           <div class="ad-bar"><div id="adBar"></div></div>
           <div class="ad-sub">আজকের আয়: ৳<span id="adEarnedToday">0</span></div>
@@ -325,6 +338,19 @@
         <i class="fa-brands fa-telegram"></i> Help — Contact Admin
       </a>
     </div>
+  </div>
+
+  <!-- বিজ্ঞাপন স্ক্রিন: ডান পাশে কাউন্টডাউন, শেষ হলে ✕ -->
+  <div class="adscreen" id="adScreen">
+    <div class="ad-top">
+      <div class="ad-chip"><span class="dot"></span> Sponsored</div>
+      <div class="ad-count-circle" id="adCount">15</div>
+    </div>
+    <div class="ad-body">
+      <div class="ad-loading">বিজ্ঞাপন লোড হচ্ছে...</div>
+      <iframe id="adFrame" src="about:blank" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
+    </div>
+    <div class="ad-foot" onclick="openAdExternally()">বিজ্ঞাপন না দেখা গেলে এখানে চাপুন</div>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -508,60 +534,54 @@ function shareInvite(){
 }
 
 // ================= বিজ্ঞাপন দেখে আয় =================
-let adBusy = false, adInterval = null;
-const AD_BTN_HTML = '<i class="fa-solid fa-play"></i> বিজ্ঞাপন দেখুন';
+let adBusy = false, adInterval = null, adLinkNow = '';
 
-function resetAdBtn(){
+function closeAdScreen(){
   clearInterval(adInterval);
-  const btn = document.getElementById('adBtn');
-  btn.disabled = false; btn.className = 'btn grad'; btn.innerHTML = AD_BTN_HTML; btn.onclick = watchAd;
-  document.getElementById('adTimer').style.display = 'none';
+  document.getElementById('adScreen').classList.remove('show');
+  document.getElementById('adFrame').src = 'about:blank';
   adBusy = false;
+}
+
+function openAdExternally(){
+  if (!adLinkNow) return;
+  if (tg && tg.openLink) tg.openLink(adLinkNow); else window.open(adLinkNow, '_blank');
 }
 
 async function watchAd(){
   if (adBusy || !S) return;
   if (S.adsToday >= S.adDailyLimit){ showToast('আজকের বিজ্ঞাপনের লিমিট শেষ, কাল আবার আসুন'); return; }
-  if (!S.adLink){ showToast('বিজ্ঞাপন এখনো চালু করা হয়নি'); return; }
   adBusy = true;
-  const btn = document.getElementById('adBtn');
-  const timerEl = document.getElementById('adTimer');
-  btn.disabled = true;
-
-  // লিংক ট্যাপের সাথে সাথেই খুলতে হবে, নইলে ব্রাউজার পপআপ ব্লক করতে পারে
-  if (tg && tg.openLink) tg.openLink(S.adLink); else window.open(S.adLink, '_blank');
+  const cnt = document.getElementById('adCount');
+  cnt.className = 'ad-count-circle'; cnt.innerText = S.adWatchSec; cnt.onclick = null;
+  document.getElementById('adScreen').classList.add('show');
 
   const { ok, data } = await api('/api/ad-start', {});
-  if (!ok){
-    resetAdBtn();
-    showToast(data.error === 'daily_limit' ? 'আজকের বিজ্ঞাপনের লিমিট শেষ' : 'শুরু করা যায়নি, আবার চেষ্টা করুন');
+  if (!ok || !data.link){
+    closeAdScreen();
+    showToast(data.error === 'daily_limit' ? 'আজকের বিজ্ঞাপনের লিমিট শেষ' : 'বিজ্ঞাপন শুরু করা যায়নি, আবার চেষ্টা করুন');
     return;
   }
+  adLinkNow = data.link;
+  document.getElementById('adFrame').src = adLinkNow;
 
   const endAt = Date.now() + (data.watchSec || S.adWatchSec) * 1000;
-  timerEl.style.display = 'flex';
   const tick = () => {
     const left = Math.ceil((endAt - Date.now()) / 1000);
-    if (left > 0){
-      timerEl.innerText = left;
-      btn.innerHTML = 'অপেক্ষা করুন...';
-      return;
-    }
+    if (left > 0){ cnt.innerText = left; return; }
     clearInterval(adInterval);
-    timerEl.style.display = 'none';
-    btn.disabled = false; btn.className = 'btn go';
-    btn.innerHTML = '<i class="fa-solid fa-xmark"></i> বন্ধ করে ৳' + S.adReward + ' নিন';
-    btn.onclick = claimAd;
+    cnt.className = 'ad-count-circle done';
+    cnt.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+    cnt.onclick = claimAd;
   };
   tick();
   adInterval = setInterval(tick, 250);
 }
 
 async function claimAd(){
-  const btn = document.getElementById('adBtn');
-  btn.disabled = true;
+  document.getElementById('adCount').onclick = null;
   const { ok, data } = await api('/api/ad-reward', {});
-  resetAdBtn();
+  closeAdScreen();
   if (ok){ showToast('৳' + S.adReward + ' যোগ হয়েছে!'); await refresh(); }
   else if (data.error === 'daily_limit') showToast('আজকের বিজ্ঞাপনের লিমিট শেষ');
   else if (data.error === 'not_watched') showToast('সময় পূর্ণ হয়নি, আবার বিজ্ঞাপন দেখুন');
