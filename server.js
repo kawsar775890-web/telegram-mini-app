@@ -16,8 +16,10 @@ const INVITE_REWARD = Number(process.env.INVITE_REWARD || 80);      // প্র
 const MIN_WITHDRAW = Number(process.env.MIN_WITHDRAW || 20);
 const AD_REWARD = Number(process.env.AD_REWARD || 0.10);            // প্রতি বিজ্ঞাপনে
 const AD_DAILY_LIMIT = Number(process.env.AD_DAILY_LIMIT || 100);   // দিনে সর্বোচ্চ বিজ্ঞাপন
-const AD_LINK = process.env.AD_LINK
-    || 'https://www.profitableratecpmnetwork.com/cf2ta9zk?key=3067408f6360c2078b202447a7ad731e'; // Adsterra ডাইরেক্ট লিংক
+const AD_LINKS = (process.env.AD_LINKS || [
+    'https://www.profitableratecpmnetwork.com/cf2ta9zk?key=3067408f6360c2078b202447a7ad731e',
+    'https://asiafilm.org/4/abac0932b204b2fcfcf6689ccc019443'
+].join(',')).split(',').map(x => x.trim()).filter(Boolean); // বিজ্ঞাপন লিংক (একটা একটা করে ঘুরবে)
 const AD_WATCH_SEC = Number(process.env.AD_WATCH_SEC || 15);         // প্রতিটি বিজ্ঞাপনের কাউন্টডাউন (সেকেন্ড)
 const PAY_NUMBER = process.env.PAY_NUMBER || '01602725947';
 const ADMIN_IDS = (process.env.ADMIN_IDS || '')                  // ঐচ্ছিক: "111,222"
@@ -114,7 +116,6 @@ function userPublicState(u) {
         adsToday: u.adsDate === dhakaDay() ? u.adsToday : 0,
         adReward: AD_REWARD,
         adDailyLimit: AD_DAILY_LIMIT,
-        adLink: AD_LINK,
         adWatchSec: AD_WATCH_SEC,
         justActivated: u.justActivated,
         activationFee: ACTIVATION_FEE,
@@ -393,7 +394,8 @@ app.post('/api/ad-start', async (req, res) => {
             return res.status(429).json({ ok: false, error: 'daily_limit' });
         }
         await User.updateOne({ tgId: id }, { $set: { adStartedAt: new Date() } });
-        res.json({ ok: true, watchSec: AD_WATCH_SEC });
+        const link = AD_LINKS[Math.floor(Math.random() * AD_LINKS.length)] || '';
+        res.json({ ok: true, watchSec: AD_WATCH_SEC, link });
     } catch (e) {
         console.error('ad-start error:', e);
         res.status(500).json({ ok: false, error: 'server_error' });
