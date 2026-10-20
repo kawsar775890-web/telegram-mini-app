@@ -12,7 +12,8 @@ const WEBAPP_URL = process.env.WEBAPP_URL || '';                 // যেমন
 const BOT_USERNAME = process.env.BOT_USERNAME || '';              // @ ছাড়া, রেফার লিংক বানাতে লাগবে
 const CLIENT_USERNAME = process.env.CLIENT_USERNAME || 'emone0011'; // Help & Support বাটনের জন্য (@ ছাড়া)
 const ACTIVATION_FEE = Number(process.env.ACTIVATION_FEE || 100);
-const INVITE_REWARD = Number(process.env.INVITE_REWARD || 80);      // প্রতি এক্টিভ ইনভাইটে
+const INVITE_REWARD = Number(process.env.INVITE_REWARD || 70);      // প্রতি এক্টিভ ইনভাইটে
+const WELCOME_BONUS = Number(process.env.WELCOME_BONUS || 10);      // নতুন ইউজার অ্যাক্টিভ হলে ওয়েলকাম বোনাস
 const MIN_WITHDRAW = Number(process.env.MIN_WITHDRAW || 20);
 const AD_REWARD = Number(process.env.AD_REWARD || 0.10);            // প্রতি বিজ্ঞাপনে
 const AD_DAILY_LIMIT = Number(process.env.AD_DAILY_LIMIT || 100);   // দিনে সর্বোচ্চ বিজ্ঞাপন
@@ -196,6 +197,8 @@ bot.on('callback_query', async ctx => {
             user.status = 'active';
             user.justActivated = true;
             await user.save();
+            // ওয়েলকাম বোনাস: অ্যাক্টিভ হওয়ার সাথে সাথে নতুন ইউজারের ব্যালেন্সে যোগ
+            await User.updateOne({ tgId: user.tgId }, { $inc: { balance: WELCOME_BONUS, totalEarned: WELCOME_BONUS } });
             await notify(user.tgId, '🎉 অভিনন্দন! আপনার একাউন্টটি সফলভাবে অ্যাক্টিভ করা হয়েছে। এখন আপনি সম্পূর্ণ অ্যাপ ব্যবহার করতে পারবেন।');
 
             // যে ইনভাইট করেছিল তার ব্যালেন্সে সরাসরি টাকা যোগ (কোনো টাস্ক নেই)
