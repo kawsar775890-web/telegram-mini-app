@@ -126,6 +126,8 @@
   .modal h2{font-size:16.5px;margin-bottom:8px;}
   .modal.gate h2{color:var(--red);}
   .modal.ok h2{color:var(--green);}
+  .bonus-box{margin:4px 0 14px;} .bonus-l{font-size:15px;font-weight:800;color:var(--text);}
+  .bonus-a{font-size:44px;font-weight:800;color:var(--green);line-height:1.15;}
   .modal p{font-size:12.5px;color:var(--sub);line-height:1.6;margin-bottom:12px;}
   .pay-box{background:rgba(239,68,68,.12);border:1px dashed var(--red);border-radius:12px;padding:12px;
            margin:14px 0;text-align:left;}
@@ -197,7 +199,7 @@
           </div>
           <div class="action" onclick="document.getElementById('inviteCard').scrollIntoView({behavior:'smooth'})">
             <div class="ic pink"><i class="fa-solid fa-user-group"></i></div>
-            <div><div class="t">Invite</div><div class="s">৳<span id="refReward">80</span> / active invite</div></div>
+            <div><div class="t">Invite</div><div class="s">৳<span id="refReward">70</span> / active invite</div></div>
           </div>
         </div>
 
@@ -211,8 +213,8 @@
             <div class="inv-ic"><i class="fa-solid fa-gift"></i></div>
             <div>
               <div class="inv-k">Invite a friend</div>
-              <div class="inv-g">প্রতি এক্টিভ ইনভাইট <span class="inv">80</span> টাকা,</div>
-              <div class="inv-d">একটি ইনভাইট একটি পেমেন্ট।</div>
+              <div class="inv-g">প্রতি অ্যাক্টিভ ইনভাইটে পান ৭০ টাকা কমিশন!</div>
+              <div class="inv-d">এবং সর্বনিম্ন ২০ টাকা হলেই উত্তোলন করুন!</div>
             </div>
           </div>
           <div class="inv-k" style="margin-top:14px;">Your invite link</div>
@@ -324,6 +326,7 @@
       <div class="ic">🎉</div>
       <h2>অভিনন্দন ও স্বাগতম!</h2>
       <p>আপনার একাউন্ট সফলভাবে এক্টিভেট হয়েছে। এখন থেকে আপনি সম্পূর্ণ অ্যাপ ব্যবহার করতে পারবেন।</p>
+      <div class="bonus-box"><div class="bonus-l">Welcome Bonus</div><div class="bonus-a">৳10</div></div>
       <button class="btn grad" onclick="closeWelcome()">শুরু করি</button>
     </div>
   </div>
@@ -374,6 +377,7 @@ let blockTimer = null;
 let pollTimer = null;
 
 function fmt(n){ return Number(n||0).toLocaleString('en-US'); }
+function fmtMoney(n){ return Number(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
 function initials(name){ return (name||'U').trim().charAt(0).toUpperCase(); }
 
 function showToast(msg){
@@ -404,8 +408,8 @@ function render(state){
 
   document.getElementById('homeName').innerText = state.name || 'User';
   document.getElementById('avatar').innerText = initials(state.name);
-  document.getElementById('homeBalance').innerText = fmt(state.balance);
-  document.getElementById('homeEarned').innerText = fmt(state.totalEarned);
+  document.getElementById('homeBalance').innerText = fmtMoney(state.balance);
+  document.getElementById('homeEarned').innerText = fmtMoney(state.totalEarned);
   document.getElementById('homeReferrals').innerText = fmt(state.totalReferrals);
   document.getElementById('homeTasks').innerText = fmt(state.adsToday);
   document.querySelectorAll('.inv').forEach(el => el.innerText = state.inviteReward);
@@ -421,13 +425,13 @@ function render(state){
   document.getElementById('referLink').value = link;
 
   // Earn: বিজ্ঞাপন
-  document.getElementById('adRw').innerText = state.adReward;
+  document.getElementById('adRw').innerText = Number(state.adReward).toFixed(2);
   document.getElementById('adDone').innerText = state.adsToday;
   document.getElementById('adBar').style.width = Math.min(100, state.adsToday / state.adDailyLimit * 100) + '%';
   document.getElementById('adEarnedToday').innerText = (state.adsToday * state.adReward).toFixed(2);
 
   // Withdraw
-  document.getElementById('wdBalance').innerText = fmt(state.balance);
+  document.getElementById('wdBalance').innerText = fmtMoney(state.balance);
   document.querySelectorAll('.mw').forEach(el => el.innerText = state.minWithdraw);
   renderHistory(state.withdrawHistory || []);
 
@@ -439,8 +443,8 @@ function render(state){
   document.getElementById('profJoin').innerHTML = state.joinedAt
     ? new Date(state.joinedAt).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' })
     : '—';
-  document.getElementById('profBalance').innerText = fmt(state.balance);
-  document.getElementById('profWithdrawn').innerText = fmt(state.totalWithdrawn);
+  document.getElementById('profBalance').innerText = fmtMoney(state.balance);
+  document.getElementById('profWithdrawn').innerText = fmtMoney(state.totalWithdrawn);
 
   const chip = document.getElementById('profChip');
   chip.className = 'status-chip ' + state.status;
@@ -582,7 +586,7 @@ async function claimAd(){
   document.getElementById('adCount').onclick = null;
   const { ok, data } = await api('/api/ad-reward', {});
   closeAdScreen();
-  if (ok){ showToast('৳' + S.adReward + ' যোগ হয়েছে!'); await refresh(); }
+  if (ok){ showToast('৳' + Number(S.adReward).toFixed(2) + ' যোগ হয়েছে!'); await refresh(); }
   else if (data.error === 'daily_limit') showToast('আজকের বিজ্ঞাপনের লিমিট শেষ');
   else if (data.error === 'not_watched') showToast('সময় পূর্ণ হয়নি, আবার বিজ্ঞাপন দেখুন');
   else showToast('রিওয়ার্ড দেওয়া যায়নি, আবার চেষ্টা করুন');
